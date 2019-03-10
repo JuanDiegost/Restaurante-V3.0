@@ -79,7 +79,6 @@ public class Chef extends Thread {
 			//Espera el tiempo en preparar ese plato
 			Thread.sleep(maxTimeToPrepared * GlobalConstant.SPEED_SYSTEM);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//Marca todos los productos como preparados

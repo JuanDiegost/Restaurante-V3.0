@@ -52,6 +52,8 @@ public class ManagerRestaurant {
 		this.daoRestaurantTable = new DaoRestauranTable();
 		this.cocina=new Cocina();
 		this.cashier=new Cashier(0);
+		//Inicia el hilo del cajero para que este este atendiendola fila de pago
+		cashier.start();
 	}
 	//--------------------------------Methods----------------------------
 	/**

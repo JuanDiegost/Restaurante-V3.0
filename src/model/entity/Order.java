@@ -3,6 +3,7 @@ package model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.Cocina;
 import model.dao.DaoProduct;
 import model.persistence.Persistence;
 import utils.Utils;
@@ -63,6 +64,8 @@ public class Order extends Thread {
 	private int timeToPreparedOrder;
 	
 	private int quantityOfDiners;
+	
+	private Cocina cocina;
 
 	// ------------------------------Constructor--------------------------
 	/**
@@ -76,7 +79,7 @@ public class Order extends Thread {
 	 *            Peristencia de listas de números pseudoaleatorios
 	 */
 	public Order(int idOrder, int idTable, Persistence persistence, DaoProduct daoProduct, int quantityOfDiners,
-			double atentionTime, Cashier cashier) {
+			double atentionTime, Cashier cashier,Cocina cocina) {
 		this.idOrder = idOrder;
 		this.idTable = idTable;
 		this.persistence = persistence;
@@ -85,13 +88,10 @@ public class Order extends Thread {
 		this.atentionTime = atentionTime;
 		this.cashier = cashier;
 		this.quantityOfDiners=quantityOfDiners;
+		this.cocina=cocina;
 	}
 	// --------------------------------Methods----------------------------
 
-	public ArrayList<Product> filterProductByType(TypePlate typePlate) {
-		// TODO FILTRAR POR TIPO DE PLATO
-		return null;
-	}
 
 	/**
 	 * Método que determina que calificación es la respectiva según un número
@@ -134,26 +134,31 @@ public class Order extends Thread {
 		}
 	}
 
+	
 	/**
 	 * Hilo
 	 */
 	@Override
 	public void run() {
+		//Si no hay clientes en la mesa significa que no han ordenado
 		if (clients.isEmpty()) {
 			for (int i = 0; i < this.quantityOfDiners; i++) {
 				//Creo el numerode clientes indicado
-				clients.add(new Client(persistence.));//aqui se deve madar un valor de la distribucion del tiempo de consumo al azar
+				//TODO aqui se deve madar un valor de la distribucion del tiempo de consumo al azar
+				clients.add(new Client(200));
 			}
 			// Definimos un número entre 3-5 para la espera del mesero
 			// int aux = (int) ((Math.random() * 3 - 5) + 1) + 5;
 			int aux = (int) this.atentionTime;
 			this.idWaiter = Integer.parseInt(Thread.currentThread().getName().substring(14));
 			// Simulo el tiempo de pedido
-
 			waitOfWaiter(aux);
+			cocina.addOrder(this);
 		} else {
 			// Simulo el tiempo que demora en traer la orden
-			waitOfWaiter(persistence);  //aqui se deve madar un valor de la distribucion del tiempo que tarda el mesero de ir ala cocina a la mesa al azar
+			waitOfWaiter(10);  //TODO aqui se deve madar un valor de la distribucion del tiempo que tarda el mesero de ir ala cocina a la mesa al azar
+			
+			eat();
 			for (Client client : clients) {
 				// calificación mesero
 				client.setCalificationWaiter(generateCalificationWaiter());
@@ -162,12 +167,31 @@ public class Order extends Thread {
 				client.endEat();
 			}
 
-			// Evalua si le da una propina al mesero
+			// Evalua si se le da una propina al mesero
 			if (Utils.generateRandom(0, 1) == 1) {
 				this.baksheesh = getTotalCost() * 0.1;
 			}
 			this.modeOfPaymet = getModePaymentRandom();
 			pay();
+			//Quita todos los clientes de la mesa
+			this.clients.removeAll(this.clients);
+		}
+	}
+
+	
+	/**
+	 * Espera el tempio que tardan el maximo tiempo de consumo de losclientes
+	 */
+	private void eat() {
+		int maxTime=0;
+		for (Client client : clients) {
+			maxTime=client.getTimeToConsume()>maxTime?client.getTimeToConsume():maxTime;
+		}
+		try {
+			Thread.sleep(maxTime*GlobalConstant.SPEED_SYSTEM);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -208,8 +232,8 @@ public class Order extends Thread {
 
 	/**
 	 * Envia a un cliente a pagar a la caja (targeta o cash)
-	 * 
-	 * @param client
+	 * @param client el cliente que va a efectuar el pago
+	 * @param totalToPay, el total que pagara ese cliente
 	 */
 	private void paymetOneClient(Client client, double totalToPay) {
 		int num = Utils.generateRandom(0, 1);

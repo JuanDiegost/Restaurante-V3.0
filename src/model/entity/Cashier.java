@@ -74,7 +74,24 @@ public class Cashier extends Thread{
 	@Override
 	public void run() {
 		super.run();
-		
+		while (true) {
+			while (!clientsCash.isEmpty()) {
+				try {
+					Thread.sleep(100);//TODO COLOCAR TIEMPO DE LA DISTRIBUCION QUE TARDA EN PROCESAR UN PAGO EN EFECTIVO
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				clientsCash.poll();
+			}
+			while (!clientsCreditCard.isEmpty()) {
+				try {
+					Thread.sleep(100);//TODO COLOCAR TIEMPO DE LA DISTRIBUCION QUE TARDA EN PROCESAR UN PAGO EN TARGETA DE CREDITO
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				clientsCreditCard.poll();
+			}
+		}
 	}
 	
 	/**
