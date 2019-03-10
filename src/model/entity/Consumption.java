@@ -2,54 +2,66 @@ package model.entity;
 
 public class Consumption {
 
-	private static int COUNT_ID=0; 
+	private static int COUNT_ID = 0;
 	private int id;
 	/**
-	 * El producto que se va a consumir 
+	 * El producto que se va a consumir
 	 */
 	private Product product;
 	private int timeToPrepared;
-	
+	private double calification;
 	private StateConsumption consumption;
-	
+
 	public Consumption(Product product) {
-		this.id=COUNT_ID;
+		this.id = COUNT_ID;
 		COUNT_ID++;
-		this.product=product;
-		this.consumption=StateConsumption.ORDER;
+		this.product = product;
+		this.consumption = StateConsumption.ORDER;
 	}
-	
-	//---------------------Setters------------------
+
+	// ---------------------Setters------------------
 	public void setPreparing() {
-		this.consumption=StateConsumption.PREPARING;
+		this.consumption = StateConsumption.PREPARING;
 	}
-	
+
 	public void setPrepared() {
-		this.consumption=StateConsumption.PREPARED;
+		this.consumption = StateConsumption.PREPARED;
 	}
-	
+
 	public void setEating() {
-		this.consumption=StateConsumption.EATING;
+		this.consumption = StateConsumption.EATING;
 	}
-	
+
 	public void setEnd() {
-		this.consumption=StateConsumption.END;
+		this.consumption = StateConsumption.END;
 	}
+
 	public void setTimeToPrepared(int timeToPrepared) {
 		this.timeToPrepared = timeToPrepared;
 	}
-	
-	//-------Getters-----------------
+
+	// -------Getters-----------------
 	public int getId() {
 		return id;
 	}
+
 	public Product getProduct() {
 		return product;
 	}
+
 	public StateConsumption getConsumption() {
 		return consumption;
 	}
+
 	public int getTimeToPrepared() {
 		return timeToPrepared;
+	}
+	
+	public double getCalification() {
+		return calification;
+	}
+	
+	public void setCalification(double calification) {
+		this.calification = calification;
 	}
 }

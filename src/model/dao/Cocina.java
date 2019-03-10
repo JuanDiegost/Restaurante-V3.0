@@ -1,26 +1,51 @@
 package model.dao;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import model.entity.Chef;
+import model.entity.Consumption;
 import model.entity.Order;
+import model.entity.StateConsumption;
 import model.entity.TypePlate;
 
-public class Cocina extends Thread {
+public class Cocina {
 
 	/**
 	 * Lista de cosineros
 	 */
 	private List<Chef> chefList;
-	private List<Order> orders;
-	private List<Order> ordersComplete;
+	private Queue<Order> orders;
 
 	public Cocina() {
 		this.chefList = new ArrayList<>();
-		this.orders = new ArrayList<>();
-		this.ordersComplete = new ArrayList<>();
+		this.orders = new LinkedList<Order>();
 		loadCheft();
+	}
+
+	/**
+	 * Indica que el chef debe empesar a cosinar, se llama desde el chef para
+	 * indicar que ya terino de cosinar y que esta disponible
+	 * 
+	 * @param chef
+	 */
+	public void startCook(Chef chef) {
+		if (!orders.isEmpty()) {
+			isOrderComplete();
+			chef.setOrderToPrepared(getNextOrder(chef, orders.peek()));
+			chef.start();
+		}
+	}
+
+	/**
+	 * Evalua si se completo la orden, si es asi se quita de la colla, y se inicia el hilo para que se consuma la orden el else del start
+	 */
+	private void isOrderComplete() {
+		if (orders.peek().isEndPrepared()) {
+			orders.poll().start();
+		}
 	}
 
 	/**
@@ -29,7 +54,7 @@ public class Cocina extends Thread {
 	private void loadCheft() {
 		// Creación cosinero 1, puede prepara entradas, platos fuertes y postres; puede
 		// preparar dos postres al mismo tiempo
-		Chef chef = new Chef(1, "JOSE", TypePlate.POSTRE);
+		Chef chef = new Chef(1, "JOSE", TypePlate.POSTRE, this);
 		chef.addTypePlate(TypePlate.ENTRADA);
 		chef.addTypePlate(TypePlate.PLATO_FUERTE);
 		chef.addTypePlate(TypePlate.POSTRE);
@@ -38,7 +63,7 @@ public class Cocina extends Thread {
 
 		// Creación cosinero 2, puede prepara entradas y platos fuertes; puede preparar
 		// dos entradas al mismo tiempo
-		Chef chef2 = new Chef(2, "PEPE", TypePlate.ENTRADA);
+		Chef chef2 = new Chef(2, "PEPE", TypePlate.ENTRADA, this);
 		chef2.addTypePlate(TypePlate.ENTRADA);
 		chef2.addTypePlate(TypePlate.PLATO_FUERTE);
 		this.chefList.add(chef2);
@@ -51,16 +76,54 @@ public class Cocina extends Thread {
 	 */
 	public void addOrder(Order order) {
 		this.orders.add(order);
-	}
-	
-	/**
-	 * Retorna la lista de los siguientes productos que deve preparar, retorna 2, si e la especilidad del chef
-	 * @param typePlate el tipo de plato que puede cocinar el chef al mismo tiempo
-	 */
-	public void getNextOrder(TypePlate specialty) {
-		for (Order order : orders) {
-			
+		for (Chef chef : chefList) {
+			if (!chef.isCompleteAllPlats()) {
+				startCook(chef);
+			}
 		}
+	}
+
+	/**
+	 * Retorna la lista de los siguientes productos que deve preparar, retorna 2, si
+	 * es la especilidad del chef
+	 * 
+	 * @param chef
+	 * @param order
+	 * @return
+	 */
+	public List<Consumption> getNextOrder(Chef chef, Order order) {
+		List<Consumption> consumptions = new ArrayList<>();
+		for (Consumption consumption : order.getListProductToPrepared()) {
+			if (consumptions.isEmpty()) {
+				// Evalua si el plato todavia no se ha cocinado
+				if (consumption.getConsumption().equals(StateConsumption.ORDER)
+						&& chefCanCookPlate(chef, consumption.getProduct().getTypePlate())) {
+					consumptions.add(consumption);
+					// si no es la especialidad del chef solo retorna un producto si no se va por el
+					// else en las siguintes iteraciones
+					if (!consumption.getProduct().getTypePlate().equals(chef.getSpecialty())) {
+						return consumptions;
+					}
+				}
+			} else {
+				// si encuentra otra especialidad la agrega a la lista y termina, si no pues nno hace nada
+				if (consumption.getConsumption().equals(StateConsumption.ORDER)
+						&& consumption.getProduct().getTypePlate().equals(chef.getSpecialty())) {
+					consumptions.add(consumption);
+					return consumptions;
+				}
+			}
+		}
+		return consumptions;
+	}
+
+	private boolean chefCanCookPlate(Chef chef, TypePlate plate) {
+		for (TypePlate typePlate : chef.getPlateTypeList()) {
+			if (typePlate.equals(plate)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -70,20 +133,10 @@ public class Cocina extends Thread {
 	 * @param chef
 	 * @return
 	 */
-	private void getOrdersCompleteByChef(Chef chef) {
+	public void getOrdersCompleteByChef(Chef chef) {
 		if (chef.isCompleteAllPlats()) {
 			chef.getPlateTypeList().clear();
 		}
-	}
-
-	@Override
-	public void run() {
-		super.run();
-		//Revisa que chefs ya acabaron de preparar el producto
-		for (Chef chef : chefList) {
-			getOrdersCompleteByChef(chef);
-		}
-		
 	}
 
 }

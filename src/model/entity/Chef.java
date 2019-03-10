@@ -3,6 +3,8 @@ package model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.Cocina;
+
 public class Chef extends Thread {
 
 	/**
@@ -30,16 +32,19 @@ public class Chef extends Thread {
 	 * Nombre del chef
 	 */
 	private String name;
+	
+	private Cocina cocina;
 
 	// -----------CONSTRUCTOR------------------------------
 
-	public Chef(int id, String name, TypePlate specialty) {
+	public Chef(int id, String name, TypePlate specialty,Cocina cocina) {
 		super();
 		this.id = id;
 		this.plateTypeList = new ArrayList<>();
 		this.name = name;
 		this.specialty = specialty;
 		this.orderToPrepared = new ArrayList<>();
+		this.cocina=cocina;
 	}
 
 	/**
@@ -64,20 +69,24 @@ public class Chef extends Thread {
 	@Override
 	public void run() {
 		int maxTimeToPrepared = 0;
+		//Calcula el maximo tiempo de preparacion en caso de prepara dos ala vez si no pues el tiempo del producto
 		for (Consumption consumption : orderToPrepared) {
 			consumption.setPreparing();
 			maxTimeToPrepared = consumption.getTimeToPrepared() > maxTimeToPrepared ? consumption.getTimeToPrepared()
 					: maxTimeToPrepared;
 		}
 		try {
+			//Espera el tiempo en preparar ese plato
 			Thread.sleep(maxTimeToPrepared * GlobalConstant.SPEED_SYSTEM);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//Marca todos los productos como preparados
 		for (Consumption consumption : orderToPrepared) {
 			consumption.setPrepared();
 		}
+		cocina.startCook(this);
 	}
 
 	// -----------------GETTERS---------------------------
@@ -96,14 +105,18 @@ public class Chef extends Thread {
 	public TypePlate getSpecialty() {
 		return specialty;
 	}
-	
+
 	public boolean isCompleteAllPlats() {
 		for (Consumption consumption : orderToPrepared) {
-			if(consumption.getConsumption().equals(StateConsumption.PREPARING)) {
+			if (consumption.getConsumption().equals(StateConsumption.PREPARING)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public void setOrderToPrepared(List<Consumption> orderToPrepared) {
+		this.orderToPrepared = orderToPrepared;
 	}
 
 }

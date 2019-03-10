@@ -34,6 +34,11 @@ public class ManagerRestaurant {
 	 * Instancia del dao chef
 	 */
 	private Cocina cocina;
+	
+	/**
+	 * Instancia de la caja.
+	 */
+	private Cashier cashier;
 	/**
 	 * Instancia de la persistencia
 	 */
@@ -46,6 +51,7 @@ public class ManagerRestaurant {
 		this.daoWaiter = new DaoWaiter();
 		this.daoRestaurantTable = new DaoRestauranTable();
 		this.cocina=new Cocina();
+		this.cashier=new Cashier(0);
 	}
 	//--------------------------------Methods----------------------------
 	/**
@@ -104,5 +110,9 @@ public class ManagerRestaurant {
 	
 	public Cocina getCocina() {
 		return cocina;
+	}
+	
+	public Cashier getCashier() {
+		return cashier;
 	}
 }

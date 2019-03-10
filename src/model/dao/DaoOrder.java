@@ -2,6 +2,7 @@ package model.dao;
 
 import java.util.ArrayList;
 
+import model.entity.Cashier;
 import model.entity.Order;
 import model.persistence.Persistence;
 
@@ -36,9 +37,9 @@ public class DaoOrder {
 	 * @param daoProduct: Gestor de los productos del restaurante
 	 * @param quantityDiners: Cantidad de comensales del pedido
 	 */
-	public void addOrder( int idTablet, Persistence persistence, DaoProduct daoProduct,int quantityDiners,double attentioTime) {
+	public void addOrder( int idTablet, Persistence persistence, DaoProduct daoProduct,int quantityDiners,double attentioTime,Cashier cashier) {
 		/*Agregamos un pedido a la lista de pedidos*/
-		this.orderslist.add(new Order(idIncremental,idTablet, persistence, daoProduct,quantityDiners,attentioTime));
+		this.orderslist.add(new Order(idIncremental,idTablet, persistence, daoProduct,quantityDiners,attentioTime,cashier));
 		/*Incrementamos automaticamente el valor del identificador de los pedidos*/
 		this.idIncremental++;
 	}

@@ -48,4 +48,26 @@ public class GlobalConstant {
 	 * Velocidad en que se ejecuta los hilos del sistema 
 	 */
 	public static int SPEED_SYSTEM=100;
+	
+	
+	/**
+	 * Timpo que tarda el mesero para menecer una calificaion menos de 10
+	 */
+	public static int TIME_CALIFICATION_LESS_10=2000;
+	
+	/**
+	 * Timpo que tarda el mesero para menecer una calificaion menos de 20
+	 */
+	public static int TIME_CALIFICATION_LESS_20=1000;
+	
+	/**
+	 * Timpo que tarda el mesero para menecer una calificaion menos de 30
+	 */
+	public static int TIME_CALIFICATION_LESS_30=500;
+	
+	/**
+	 * Timpo que tarda el mesero para menecer una calificaion menos de 40
+	 */
+	public static int TIME_CALIFICATION_LESS_40=200;
+	
 }

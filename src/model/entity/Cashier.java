@@ -1,26 +1,14 @@
 package model.entity;
 
-public class Cashier {
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Cashier extends Thread{
 
 	/**
 	 * Identificador del cajero
 	 */
 	private int id;
-	
-	/**
-	 * Tiempo que tarda en registrar un pago en efectivo
-	 */
-	private int timePaymetInCash;
-	
-	/**
-	 * Tiempo que tarda en registrar un pago con targeta de credito
-	 */
-	private int timePaymetCreditCard;
-	
-	/**
-	 * Tiempo que tarda en desplazarse de la caja a cualquier mesa del restaurante
-	 */
-	private int timetoFlushAtRestaurantTable;
 	
 	/**
 	 * Total pagado en efectivo
@@ -51,20 +39,25 @@ public class Cashier {
 	 */
 	private int numberPaymentAmerican;
 	
-	
 	/**
 	 * Numero de veces que se paga con modalidad de pago dividido
 	 */
 	private int numberPaymentDivided;
-
-
+	
+	/**
+	 * Cola de clientes paara pagar en efectivo.
+	 */
+	private Queue<Client> clientsCash;
+	
+	/**
+	 * Cola de clientes paara pagar con targeta
+	 */
+	private Queue<Client> clientsCreditCard;
+	
 	//-------------------CONSTRUCTOR---------------------------------------
-	public Cashier(int id, int timePaymetInCash, int timePaymetCreditCard, int timetoFlushAtRestaurantTable) {
+	public Cashier(int id) {
 		super();
 		this.id = id;
-		this.timePaymetInCash = timePaymetInCash;
-		this.timePaymetCreditCard = timePaymetCreditCard;
-		this.timetoFlushAtRestaurantTable = timetoFlushAtRestaurantTable;
 		this.totalPaidCash=0;
 		this.totalPaidCreditCard=0;
 		this.numberPaymentCash=0;
@@ -72,15 +65,24 @@ public class Cashier {
 		this.numberPaymentAmerican=0;
 		this.numberPaymentSingle=0;
 		this.numberPaymentDivided=0;
+		clientsCash=new LinkedList<>();
+		clientsCreditCard=new LinkedList<>();
 	}
 
 	//---------------Methods--------------------------------------
+	
+	@Override
+	public void run() {
+		super.run();
+		
+	}
 	
 	/**
 	 * Agrega un nuevo pago con targeta de credito
 	 * @param payment cantidad a pagar con la targeta de credito
 	 */
-	public void addPaymentCreditCard(double payment) {
+	public void addPaymentCreditCard(Client client,double payment) {
+		clientsCreditCard.add(client);
 		this.totalPaidCreditCard+=payment;
 		this.numberPaymentCreditCard++;
 	}
@@ -89,7 +91,8 @@ public class Cashier {
 	 * Agrega un nuevo pago con targeta en efectivo
 	 * @param payment cantidad a pagar en efectivo
 	 */
-	public void addPaymentCash(double payment) {
+	public void addPaymentCash(Client client,double payment) {
+		clientsCash.add(client);
 		this.totalPaidCash+=payment;
 		this.numberPaymentCash++;
 	}
@@ -116,24 +119,10 @@ public class Cashier {
 	}
 
 	//----------------Getters---------------------------------------------
-	public int getId() {
+	public int getIdCachier() {
 		return id;
 	}
 
-
-	public int getTimePaymetInCash() {
-		return timePaymetInCash;
-	}
-
-
-	public int getTimePaymetCreditCard() {
-		return timePaymetCreditCard;
-	}
-
-
-	public int getTimetoFlushAtRestaurantTable() {
-		return timetoFlushAtRestaurantTable;
-	}
 	public int getNumberPaymentAmerican() {
 		return numberPaymentAmerican;
 	}

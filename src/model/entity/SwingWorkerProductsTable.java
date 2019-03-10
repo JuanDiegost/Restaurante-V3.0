@@ -62,7 +62,7 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 				aux = diners - attendedDiners;
 			}
 			/*Creamos una orden*/
-			manager.getDaoOrder().addOrder(table.getId(),persistence, manager.getDaoProduct(),aux,persistence.getAttentioTimeList().get(aux));
+			manager.getDaoOrder().addOrder(table.getId(),persistence, manager.getDaoProduct(),aux,persistence.getAttentioTimeList().get(aux),manager.getCashier());
 			attendedDiners+= aux;
 			/*Lanzamos el hilo al ejecutor para que se ponga en la cola de ejecución*/
 			executor.execute(manager.getDaoOrder().getOrderslist().get(manager.getDaoOrder().getOrderslist().size()-1));
