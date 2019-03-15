@@ -6,6 +6,8 @@ package model.dao;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import model.entity.GlobalConstant;
 import model.entity.RestaurantTable;
@@ -63,6 +65,17 @@ public class DaoRestauranTable {
 			return restaurantTablesList.get(4);
 		}
 	}
+	
+	public List<RestaurantTable> getRestaurantTableEmpTy(){
+		List<RestaurantTable> list=new ArrayList<>();
+		for (RestaurantTable restaurantTable :restaurantTablesList) {
+			if(restaurantTable.getOrder()==null)
+				list.add(restaurantTable);
+		}
+		return list;
+			
+	}
+	
 	//---------------------------------Getters---------------------------
 	public ArrayList<RestaurantTable> getRestaurantTablesList() {
 		return restaurantTablesList;

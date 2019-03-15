@@ -1,0 +1,6 @@
+package model.entity;
+
+public enum StateWaiter {
+
+	SEARCH_TABLES,ATTEND_TABLE, SEND_ORDER_TO_KITCHEN,SEND_ORDER_TO_TABLE,IN_KITCHEN;
+}

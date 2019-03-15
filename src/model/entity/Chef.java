@@ -32,19 +32,19 @@ public class Chef extends Thread {
 	 * Nombre del chef
 	 */
 	private String name;
-	
+
 	private Cocina cocina;
 
 	// -----------CONSTRUCTOR------------------------------
 
-	public Chef(int id, String name, TypePlate specialty,Cocina cocina) {
+	public Chef(int id, String name, TypePlate specialty, Cocina cocina) {
 		super();
 		this.id = id;
 		this.plateTypeList = new ArrayList<>();
 		this.name = name;
 		this.specialty = specialty;
 		this.orderToPrepared = new ArrayList<>();
-		this.cocina=cocina;
+		this.cocina = cocina;
 	}
 
 	/**
@@ -68,24 +68,31 @@ public class Chef extends Thread {
 
 	@Override
 	public void run() {
-		int maxTimeToPrepared = 0;
-		//Calcula el maximo tiempo de preparacion en caso de prepara dos ala vez si no pues el tiempo del producto
-		for (Consumption consumption : orderToPrepared) {
-			consumption.setPreparing();
-			maxTimeToPrepared = consumption.getTimeToPrepared() > maxTimeToPrepared ? consumption.getTimeToPrepared()
-					: maxTimeToPrepared;
+		while (true) {
+			int maxTimeToPrepared = 0;
+			// Calcula el maximo tiempo de preparacion en caso de prepara dos ala vez si no
+			// pues el tiempo del producto
+			for (Consumption consumption : orderToPrepared) {
+				if (consumption.getConsumption().equals(StateConsumption.ASIGNED)) {
+					consumption.setPreparing();
+					System.out.println("Chef "+id +" prepara " + consumption.getProduct().getName());
+					maxTimeToPrepared = consumption.getTimeToPrepared() > maxTimeToPrepared
+							? consumption.getTimeToPrepared()
+							: maxTimeToPrepared;
+				consumption.setPrepared();
+				}
+			}
+			try {
+				// Espera el tiempo en preparar ese plato
+				//Thread.sleep(maxTimeToPrepared * GlobalConstant.SPEED_SYSTEM);
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			// Marca todos los productos como preparados
+			//ManagerRestaurant.getManagerRestaurant().getCocina().startCook(this);
 		}
-		try {
-			//Espera el tiempo en preparar ese plato
-			Thread.sleep(maxTimeToPrepared * GlobalConstant.SPEED_SYSTEM);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		//Marca todos los productos como preparados
-		for (Consumption consumption : orderToPrepared) {
-			consumption.setPrepared();
-		}
-		cocina.startCook(this);
+
 	}
 
 	// -----------------GETTERS---------------------------

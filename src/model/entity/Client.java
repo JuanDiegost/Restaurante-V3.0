@@ -12,17 +12,19 @@ public class Client extends Thread {
 	private int id;
 	private int timeToConsume;
 	private double calificationWaiter;
+	private DaoProduct daoProduct;
 
 	/**
 	 * Lista de productos que el cliente desea consumir
 	 */
 	private List<Consumption> consumptions;
 
-	public Client(int timeToConsume) {
+	public Client(int timeToConsume,DaoProduct daoProduct) {
 		this.id = ID_COUNT;
 		this.timeToConsume = timeToConsume;
 		ID_COUNT++;
 		consumptions = new ArrayList<>();
+		this.daoProduct=daoProduct;
 		generateListProduct();
 	}
 
@@ -43,15 +45,23 @@ public class Client extends Thread {
 		addEntrace();
 		addDesert();
 		addMainPlate();
+		printConsume();
+	}
+	
+	private void printConsume() {
+		for (Consumption consumption : consumptions) {
+			System.out.println("Clinte "+id+" quiere "+consumption.getProduct().getName());
+		}
 	}
 
 	/**
 	 * Agrega un numero aleatorio de entradas de 0 a 1
 	 */
 	private void addEntrace() {
+		
 		int numEntrace = Utils.generateRandom(GlobalConstant.MIN_NUM_ENTRACE, GlobalConstant.MAX_NUM_ENTRACE);
 		for (int i = 0; i < numEntrace; i++) {
-			consumptions.add(new Consumption(DaoProduct.getRandomEntrece()));
+			consumptions.add(new Consumption(daoProduct.getRandomEntrece()));
 		}
 	}
 
@@ -61,7 +71,7 @@ public class Client extends Thread {
 	private void addMainPlate() {
 		int numMainPLate = Utils.generateRandom(GlobalConstant.MIN_NUM_MAIN_COURSE, GlobalConstant.MAX_NUM_MAIN_COURSE);
 		for (int i = 0; i < numMainPLate; i++) {
-			consumptions.add(new Consumption(DaoProduct.getRandomMain()));
+			consumptions.add(new Consumption(daoProduct.getRandomMain()));
 		}
 	}
 
@@ -71,7 +81,7 @@ public class Client extends Thread {
 	private void addDesert() {
 		int numDessert = Utils.generateRandom(GlobalConstant.MIN_NUM_DESSERT, GlobalConstant.MAX_NUM_DESSERT);
 		for (int i = 0; i < numDessert; i++) {
-			consumptions.add(new Consumption(DaoProduct.getRandomDessert()));
+			consumptions.add(new Consumption(daoProduct.getRandomDessert()));
 		}
 	}
 
@@ -81,6 +91,20 @@ public class Client extends Thread {
 	 * @return
 	 */
 	public boolean isEndPrepared() {
+		for (Consumption consumption : consumptions) {
+			if (consumption.getConsumption().equals(StateConsumption.PREPARING)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Retorna true, si todos los pedidos del clinete ya han sido preparados
+	 * 
+	 * @return
+	 */
+	public boolean isAllOrderPrepared() {
 		for (Consumption consumption : consumptions) {
 			if (!consumption.getConsumption().equals(StateConsumption.PREPARED)) {
 				return false;
@@ -117,6 +141,7 @@ public class Client extends Thread {
 
 			for (Consumption consumption : consumptions) {
 				if (consumption.getConsumption().equals(StateConsumption.EATING)) {
+					System.out.println("Termina consumo");
 					consumption.setEnd();
 				}
 			}

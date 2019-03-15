@@ -29,7 +29,7 @@ public class Controller implements ActionListener{
 	private Persistence persistence;
 	//------------------------------Constructor--------------------------
 	public Controller() {
-		this.persistence = new Persistence();
+		this.persistence = Persistence.getINSTANCE();
 		this.window = new PrincipalWindow(this);
 	}
 	//--------------------------------Methods----------------------------
@@ -39,7 +39,7 @@ public class Controller implements ActionListener{
 		switch (action) {
 		case "GO_TO_SIMULATE":
 			//Creamos el objeto del administrador del restaurante/
-			this.manager = new ManagerRestaurant(persistence);
+			this.manager =ManagerRestaurant.getManagerRestaurant();
 			//Calculamos la cantidad de días y horas a trabajar/
 			float[] daysAndHours = manager.calculateHoursAndDaysToSimulate();
 			//Calculamos la cantidad de comensales totales/
@@ -49,6 +49,7 @@ public class Controller implements ActionListener{
 			//Creamos un hilo que actualice la vista a medida que se ejecute la logica/
 			SwingWorkerProductsTable sw = new SwingWorkerProductsTable(manager, diners, persistence, window);
 			//Ejecutamos el hilo/
+			manager.startAtention();
 			sw.execute();			
 			break;
 		}

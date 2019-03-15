@@ -16,6 +16,11 @@ import utils.Utils;
  */
 public class Order extends Thread {
 	// ------------------------------Attributes---------------------------
+
+	/**
+	 * 
+	 */
+	private static int COUNT_ID = 0;
 	/**
 	 * Identificador de la orden
 	 */
@@ -57,15 +62,20 @@ public class Order extends Thread {
 	 * Objeto que representa la caja
 	 */
 	private Cashier cashier;
+	/**
+	 * Objeto que representa al mesero
+	 */
+	private Waiter waiter;
 
 	/**
-	 * Tiempo que se tarda en preparar la orden
+	 * Cantidad de clientes en la mesa
 	 */
-	private int timeToPreparedOrder;
-	
 	private int quantityOfDiners;
-	
-	private Cocina cocina;
+
+	/**
+	 * La mesa en la que se encuentran los clientes
+	 */
+	private RestaurantTable restaurantTable;
 
 	// ------------------------------Constructor--------------------------
 	/**
@@ -78,20 +88,20 @@ public class Order extends Thread {
 	 * @param persistence
 	 *            Peristencia de listas de números pseudoaleatorios
 	 */
-	public Order(int idOrder, int idTable, Persistence persistence, DaoProduct daoProduct, int quantityOfDiners,
-			double atentionTime, Cashier cashier,Cocina cocina) {
-		this.idOrder = idOrder;
+	public Order(int idTable, Persistence persistence, DaoProduct daoProduct, int quantityOfDiners, double atentionTime,
+			Cashier cashier, Waiter waiter, RestaurantTable restaurantTable) {
+		this.idOrder = COUNT_ID;
+		COUNT_ID++;
 		this.idTable = idTable;
 		this.persistence = persistence;
 		this.clients = new ArrayList<>();
 		this.daoProduct = daoProduct;
 		this.atentionTime = atentionTime;
 		this.cashier = cashier;
-		this.quantityOfDiners=quantityOfDiners;
-		this.cocina=cocina;
+		this.quantityOfDiners = quantityOfDiners;
+		this.restaurantTable = restaurantTable;
 	}
 	// --------------------------------Methods----------------------------
-
 
 	/**
 	 * Método que determina que calificación es la respectiva según un número
@@ -125,39 +135,50 @@ public class Order extends Thread {
 	 * 
 	 * @param
 	 */
-	private void waitOfWaiter(int i) {
+	private void waitOfWaiter(int i,Waiter waiter) {
 		try {
 			/* Espera del mesero en la mesa */
+			waiter.setStateWaiter(StateWaiter.ATTEND_TABLE);
 			Thread.sleep(i * GlobalConstant.SPEED_SYSTEM);
+			waiter.setStateWaiter(StateWaiter.SEARCH_TABLES);
 		} catch (InterruptedException e) {
 			System.out.println("Error en la espera del mesero " + idWaiter + " en la mesa: " + idTable);
 		}
 	}
 
-	
+	public void attendOrder(Waiter waiter) {
+		System.out.println("Numero de comenzales " + quantityOfDiners);
+		for (int i = 0; i < this.quantityOfDiners; i++) {
+			// Creo el numerode clientes indicado
+			// TODO aqui se deve madar un valor de la distribucion del tiempo de consumo al
+			// azar
+			double timeConsume = persistence.getConsumeTime()
+					.get(Utils.generateRandom(0, persistence.getConsumeTime().size() - 1));
+			clients.add(new Client((int) timeConsume, daoProduct));
+
+		}
+		// Definimos un número entre 3-5 para la espera del mesero
+		// int aux = (int) ((Math.random() * 3 - 5) + 1) + 5;
+		int aux = (int) this.atentionTime;
+		//this.idWaiter = Integer.parseInt(Thread.currentThread().getName().substring(14));
+		// Simulo el tiempo de pedido
+		waitOfWaiter(aux,waiter);
+		System.out.println("Termina de atender");
+		waiter.setStateWaiter(StateWaiter.SEARCH_TABLES);
+	}
+
 	/**
 	 * Hilo
 	 */
 	@Override
 	public void run() {
-		//Si no hay clientes en la mesa significa que no han ordenado
+		// Si no hay clientes en la mesa significa que no han ordenado
+		System.out.println("Empiezan los clientes");
 		if (clients.isEmpty()) {
-			for (int i = 0; i < this.quantityOfDiners; i++) {
-				//Creo el numerode clientes indicado
-				//TODO aqui se deve madar un valor de la distribucion del tiempo de consumo al azar
-				clients.add(new Client(200));
-			}
-			// Definimos un número entre 3-5 para la espera del mesero
-			// int aux = (int) ((Math.random() * 3 - 5) + 1) + 5;
-			int aux = (int) this.atentionTime;
-			this.idWaiter = Integer.parseInt(Thread.currentThread().getName().substring(14));
-			// Simulo el tiempo de pedido
-			waitOfWaiter(aux);
-			cocina.addOrder(this);
+
 		} else {
 			// Simulo el tiempo que demora en traer la orden
-			waitOfWaiter(10);  //TODO aqui se deve madar un valor de la distribucion del tiempo que tarda el mesero de ir ala cocina a la mesa al azar
-			
+			System.out.println("Pedido empieza a comer"+getIdOrder());
 			eat();
 			for (Client client : clients) {
 				// calificación mesero
@@ -166,6 +187,7 @@ public class Order extends Thread {
 				client.calificatePlats();
 				client.endEat();
 			}
+			System.out.println("Calificar");
 
 			// Evalua si se le da una propina al mesero
 			if (Utils.generateRandom(0, 1) == 1) {
@@ -173,32 +195,34 @@ public class Order extends Thread {
 			}
 			this.modeOfPaymet = getModePaymentRandom();
 			pay();
-			//Quita todos los clientes de la mesa
-			this.clients.removeAll(this.clients);
+			restaurantTable.setOrder(null);
+			// Quita todos los clientes de la mesa
+
 		}
 	}
 
-	
 	/**
 	 * Espera el tempio que tardan el maximo tiempo de consumo de losclientes
 	 */
 	private void eat() {
-		int maxTime=0;
+		int maxTime = 0;
 		for (Client client : clients) {
-			maxTime=client.getTimeToConsume()>maxTime?client.getTimeToConsume():maxTime;
+			maxTime = client.getTimeToConsume() > maxTime ? client.getTimeToConsume() : maxTime;
 		}
 		try {
-			Thread.sleep(maxTime*GlobalConstant.SPEED_SYSTEM);
+			Thread.sleep(maxTime * GlobalConstant.SPEED_SYSTEM);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
 	 * Metodo que llama a la caja para realizar el pago
 	 */
 	private void pay() {
+		System.out.println("Cliente paga");
 		if (modeOfPaymet.equals(ModeOfPaymet.AMERICAN)) {
 			cashier.addPaymetAmerican();
 			paymentAllClientAmerican();
@@ -207,7 +231,7 @@ public class Order extends Thread {
 			paymentAllClientDivided();
 		} else {
 			cashier.addPaymetSingle();
-			paymetOneClient(clients.get(Utils.generateRandom(0, clients.size())), getTotalCost());
+			paymetOneClient(clients.get(Utils.generateRandom(0, clients.size()-1)), getTotalCost());
 		}
 	}
 
@@ -232,11 +256,14 @@ public class Order extends Thread {
 
 	/**
 	 * Envia a un cliente a pagar a la caja (targeta o cash)
-	 * @param client el cliente que va a efectuar el pago
-	 * @param totalToPay, el total que pagara ese cliente
+	 * 
+	 * @param client
+	 *            el cliente que va a efectuar el pago
+	 * @param totalToPay,
+	 *            el total que pagara ese cliente
 	 */
 	private void paymetOneClient(Client client, double totalToPay) {
-		int num = Utils.generateRandom(0, 1);
+		int num = Utils.generateRandom(0, 2);
 		if (num == 1) {
 			cashier.addPaymentCash(client, totalToPay);
 		} else {
@@ -250,7 +277,7 @@ public class Order extends Thread {
 	 * @return
 	 */
 	public ModeOfPaymet getModePaymentRandom() {
-		int num = Utils.generateRandom(0, 2);
+		int num = Utils.generateRandom(0, 3);
 		return num == 0 ? ModeOfPaymet.AMERICAN : num == 1 ? ModeOfPaymet.DIVIDED : ModeOfPaymet.ONE_PERSON;
 	}
 
@@ -315,6 +342,20 @@ public class Order extends Thread {
 	public boolean isEndPrepared() {
 		for (Client client : clients) {
 			if (!client.isEndPrepared()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Retorna true si todos los platos han sido, preparados
+	 * 
+	 * @return
+	 */
+	public boolean isAllOrderPrepated() {
+		for (Client client : clients) {
+			if (!client.isAllOrderPrepared()) {
 				return false;
 			}
 		}

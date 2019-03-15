@@ -81,7 +81,8 @@ public class Cashier extends Thread{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				clientsCash.poll();
+				Client cliente=clientsCash.poll();
+				System.out.println("Cliente "+cliente.getIdClient() +" Termina de pagar");
 			}
 			while (!clientsCreditCard.isEmpty()) {
 				try {
@@ -99,6 +100,7 @@ public class Cashier extends Thread{
 	 * @param payment cantidad a pagar con la targeta de credito
 	 */
 	public void addPaymentCreditCard(Client client,double payment) {
+		System.out.println("Cliente "+client.getIdClient()+" paga $"+payment+" con targeta");
 		clientsCreditCard.add(client);
 		this.totalPaidCreditCard+=payment;
 		this.numberPaymentCreditCard++;
@@ -109,6 +111,7 @@ public class Cashier extends Thread{
 	 * @param payment cantidad a pagar en efectivo
 	 */
 	public void addPaymentCash(Client client,double payment) {
+		System.out.println("Cliente "+client.getIdClient()+" paga $"+payment+" en efetico");
 		clientsCash.add(client);
 		this.totalPaidCash+=payment;
 		this.numberPaymentCash++;
@@ -118,6 +121,7 @@ public class Cashier extends Thread{
 	 * Agrega un tipo de pago dividido
 	 */
 	public void addPaymetDivided() {
+		System.out.println("Pago dividido");
 		this.numberPaymentDivided++;
 	}
 	
@@ -125,6 +129,7 @@ public class Cashier extends Thread{
 	 * Agrega un tipo de pago americano
 	 */
 	public void addPaymetAmerican() {
+		System.out.println("Pago americano");
 		this.numberPaymentAmerican++;
 	}
 	
@@ -132,6 +137,7 @@ public class Cashier extends Thread{
 	 * Agrega un tipo de pago unico
 	 */
 	public void addPaymetSingle() {
+		System.out.println("Pago uno");
 		this.numberPaymentSingle++;
 	}
 

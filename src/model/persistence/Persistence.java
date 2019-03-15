@@ -44,9 +44,26 @@ public class Persistence {
 	 * Lista de tiempos de atecnion
 	 */
 	private ArrayList<Double> attentioTimeList;
-	// ------------------------------Constructor--------------------------
 
-	public Persistence() {
+	/**
+	 * Lista de los tiempos de cosumo
+	 */
+	private ArrayList<Double> consumeTime;
+
+	private static Persistence INSTANCE;
+
+	// ------------------------------Constructor--------------------------
+	private Persistence() {
+	}
+
+	public static Persistence getINSTANCE() {
+		if (INSTANCE == null) {
+			INSTANCE = new Persistence(1);
+		}
+		return INSTANCE;
+	}
+
+	private Persistence(int n) {
 		this.hoursList = new ArrayList<Double>();
 		this.dinersList = new ArrayList<Double>();
 		this.qualificationList = new ArrayList<Double>();
@@ -54,6 +71,7 @@ public class Persistence {
 		this.auxProductList = new ArrayList<Double>();
 		this.restaurantTablesList = new ArrayList<Double>();
 		this.attentioTimeList = new ArrayList<Double>();
+		this.consumeTime = new ArrayList<Double>();
 		loadListToMemory();
 	}
 
@@ -69,8 +87,10 @@ public class Persistence {
 			readCSV(qualificationList, "./res/NumerosValidados/NumerosCalificaciones.csv");
 			readCSV(productList, "./res/NumerosValidados/NumerosPlatosInicial.csv");
 			readCSV(auxProductList, "./res/NumerosValidados/NumerosPlatoCondicionadosPorPrimeraOrden.csv");
-			readCSV(restaurantTablesList, "./res/NumerosValidados/NumerosMesas.csv");
-			readCSV(attentioTimeList, "./res/NumerosValidados/TiemposdeAtencion.csv");
+			readCSV(restaurantTablesList, "./res/NumerosValidados/NumerosHoras.csv");
+			readCSV(attentioTimeList, "./res/NumerosValidados/NumerosHoras.csv");
+			readCSV(consumeTime, "./res/NumerosValidados/NumerosHoras.csv");
+
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Error cargando los archivos de persistencia", "Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -132,5 +152,9 @@ public class Persistence {
 
 	public ArrayList<Double> getAttentioTimeList() {
 		return attentioTimeList;
+	}
+
+	public ArrayList<Double> getConsumeTime() {
+		return consumeTime;
 	}
 }

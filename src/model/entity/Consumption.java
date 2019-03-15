@@ -32,6 +32,10 @@ public class Consumption {
 		this.consumption = StateConsumption.EATING;
 	}
 
+	public void setAsigned() {
+		this.consumption=StateConsumption.ASIGNED;
+	}
+	
 	public void setEnd() {
 		this.consumption = StateConsumption.END;
 	}
@@ -63,5 +67,9 @@ public class Consumption {
 	
 	public void setCalification(double calification) {
 		this.calification = calification;
+	}
+	
+	public void setConsumption(StateConsumption consumption) {
+		this.consumption = consumption;
 	}
 }

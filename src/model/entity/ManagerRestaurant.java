@@ -6,13 +6,16 @@ import model.dao.DaoProduct;
 import model.dao.DaoRestauranTable;
 import model.dao.DaoWaiter;
 import model.persistence.Persistence;
+import utils.Utils;
+
 /**
  * Clase encargada de la estructura de el adminitrador del restaurante
+ * 
  * @author Andres Torres y Lina Melo
  *
  */
-public class ManagerRestaurant {
-	//------------------------------Attributes---------------------------
+public class ManagerRestaurant extends Thread {
+	// ------------------------------Attributes---------------------------
 	/**
 	 * Instancia del dao productos
 	 */
@@ -29,12 +32,12 @@ public class ManagerRestaurant {
 	 * Instancia del dao mesas del restaurante
 	 */
 	private DaoRestauranTable daoRestaurantTable;
-	
+
 	/**
 	 * Instancia del dao chef
 	 */
 	private Cocina cocina;
-	
+
 	/**
 	 * Instancia de la caja.
 	 */
@@ -43,77 +46,133 @@ public class ManagerRestaurant {
 	 * Instancia de la persistencia
 	 */
 	private Persistence persistence;
-	//------------------------------Constructor--------------------------
-	public ManagerRestaurant(Persistence persistence) {
+	
+	private static ManagerRestaurant managerRestaurant;
+	
+	private ManagerRestaurant() {}
+	
+	public static ManagerRestaurant getManagerRestaurant() {
+		if(managerRestaurant==null)
+			managerRestaurant=new ManagerRestaurant(Persistence.getINSTANCE());
+		return managerRestaurant;
+	}
+
+	// ------------------------------Constructor--------------------------
+	private ManagerRestaurant(Persistence persistence) {
 		this.persistence = persistence;
 		this.daoOrder = new DaoOrder();
 		this.daoProduct = new DaoProduct();
 		this.daoWaiter = new DaoWaiter();
 		this.daoRestaurantTable = new DaoRestauranTable();
-		this.cocina=new Cocina();
-		this.cashier=new Cashier(0);
-		//Inicia el hilo del cajero para que este este atendiendola fila de pago
-		cashier.start();
+		this.cocina = new Cocina();
+		this.cashier = new Cashier(0);
+		// Inicia el hilo del cajero para que este este atendiendola fila de pago
 	}
-	//--------------------------------Methods----------------------------
+
+	// --------------------------------Methods----------------------------
 	/**
-	 * Calculamos la cantidad de  dias a simular
+	 * Calculamos la cantidad de dias a simular
+	 * 
 	 * @return arreglo 2 posiciones: [0] horas [1] días
 	 */
 	public float[] calculateHoursAndDaysToSimulate() {
-		/*Definimos un arreglo para guardar los 2 valores*/
-		float[] values = {0,0};
-		/*Definimos un número random para ver la posición del numero en la lista de horas generadas pseudo-aleatoriamente*/
+		/* Definimos un arreglo para guardar los 2 valores */
+		float[] values = { 0, 0 };
+		/*
+		 * Definimos un número random para ver la posición del numero en la lista de
+		 * horas generadas pseudo-aleatoriamente
+		 */
 		int numberRandom;
-		/*Generamos un ciclo hasta que se cumpla minimo 100 horas*/
-		while(values[0] <= GlobalConstant.HOURS_TO_SIMULATE) {
-			/*Asignamos a la variable la posición de lista de horas pseudo-aleatorias*/
-			numberRandom =(int)(Math.random()*999);
-			/*Acumulamos el valor de horas*/
+		/* Generamos un ciclo hasta que se cumpla minimo 100 horas */
+		while (values[0] <= GlobalConstant.HOURS_TO_SIMULATE) {
+			/* Asignamos a la variable la posición de lista de horas pseudo-aleatorias */
+			numberRandom = (int) (Math.random() * 999);
+			/* Acumulamos el valor de horas */
 			values[0] += persistence.getHoursList().get(numberRandom);
-			/*Sumamos 1 a los días a simular*/
+			/* Sumamos 1 a los días a simular */
 			values[1]++;
 		}
-		/*Retornamos el arreglo con la informaci�n*/
+		/* Retornamos el arreglo con la informaci�n */
 		return values;
 	}
+
 	/**
 	 * Método que calcula los comensales dependiendo de los días a simular
+	 * 
 	 * @return
 	 */
 	public int calculateDinersDependsDaysToSimulate(int days) {
-		/*Definimos una variable para contar la cantidad de comensales*/
+		/* Definimos una variable para contar la cantidad de comensales */
 		int diners = 0;
-		/*Generamos un n�mero random para seleccionar de la lista de n�mero ya validados */
-		int numberRandomToInitOnList =(int)(Math.random()*(999 - days));
-		/*Recorremos la lista desde la posici�n que obtuvimos hasta la cantidad de d�as a simular*/
-		for (int i = numberRandomToInitOnList; i < numberRandomToInitOnList+days; i++) {
-			/*Acumulamos esa cantidad de comensales*/
+		/*
+		 * Generamos un n�mero random para seleccionar de la lista de n�mero ya
+		 * validados
+		 */
+		int numberRandomToInitOnList = (int) (Math.random() * (999 - days));
+		/*
+		 * Recorremos la lista desde la posici�n que obtuvimos hasta la cantidad de d�as
+		 * a simular
+		 */
+		for (int i = numberRandomToInitOnList; i < numberRandomToInitOnList + days; i++) {
+			/* Acumulamos esa cantidad de comensales */
 			diners += persistence.getDinersList().get(i);
 		}
-		/*Retornamos la cantidad total de comensales calculados*/
+		/* Retornamos la cantidad total de comensales calculados */
 		return diners;
 	}
-	
-	
-	//--------------------------------Getters----------------------------
+
+	public void startAtention() {
+		System.out.println(persistence);
+		Waiter waiter = daoWaiter.getWaitersList().get(0);
+		for (int i = 0; i < 10; i++) {
+			daoRestaurantTable.addRestaurantTable(i);
+			waiter.addTable(daoRestaurantTable.getRestaurantTablesList().get(i));
+		}
+		daoWaiter.addWaiter(1, daoRestaurantTable.getRestaurantTablesList(), 3, this, persistence);
+		this.start();
+		waiter.start();
+
+	}
+
+	@Override
+	public void run() {
+		super.run();
+		for (int i = 0; i < 10; i++) {
+			try {
+				Thread.sleep(5000);
+				// Tiempo en tre la llegada de un nuevo cliente
+				RestaurantTable restaurantTable = daoRestaurantTable.getRestaurantTableEmpTy()
+						.get(Utils.generateRandom(0, daoRestaurantTable.getRestaurantTableEmpTy().size() - 1));
+				System.out.println("Nuevo cliente");
+				restaurantTable.fillTable();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// --------------------------------Getters----------------------------
 	public DaoProduct getDaoProduct() {
 		return daoProduct;
 	}
+
 	public DaoWaiter getDaoWaiter() {
 		return daoWaiter;
 	}
+
 	public DaoOrder getDaoOrder() {
 		return daoOrder;
 	}
+
 	public DaoRestauranTable getDaoRestaurantTable() {
 		return daoRestaurantTable;
 	}
-	
+
 	public Cocina getCocina() {
 		return cocina;
 	}
-	
+
 	public Cashier getCashier() {
 		return cashier;
 	}

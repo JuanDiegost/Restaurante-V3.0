@@ -10,6 +10,6 @@ public class Utils {
 	 * @return
 	 */
 	public static int generateRandom(int of,int to) {
-		return (int) (Math.random() * (to+1)) + of;
+		return (int) ((Math.random() * (to)) + of);
 	}
 }

@@ -17,11 +17,19 @@ public class Cocina {
 	 * Lista de cosineros
 	 */
 	private List<Chef> chefList;
+	/**
+	 * Cola de ordenes para preparar
+	 */
 	private Queue<Order> orders;
+	/**
+	 * Lista de ordenes completadas
+	 */
+	private List<Order> ordersPrepared;
 
 	public Cocina() {
 		this.chefList = new ArrayList<>();
 		this.orders = new LinkedList<Order>();
+		this.ordersPrepared = new ArrayList<>();
 		loadCheft();
 	}
 
@@ -34,18 +42,42 @@ public class Cocina {
 	public void startCook(Chef chef) {
 		if (!orders.isEmpty()) {
 			isOrderComplete();
-			chef.setOrderToPrepared(getNextOrder(chef, orders.peek()));
-			chef.start();
+			try {
+				chef.setOrderToPrepared(getNextOrder(chef, orders.peek()));
+			} catch (Exception e) {
+			}
+
 		}
 	}
 
 	/**
-	 * Evalua si se completo la orden, si es asi se quita de la colla, y se inicia el hilo para que se consuma la orden el else del start
+	 * Evalua si se completo la orden, si es asi se quita de la cola de preparación,
+	 * y se ingresa en la lista de ordenes para llevar a la mesa
+	 * 
 	 */
 	private void isOrderComplete() {
-		if (orders.peek().isEndPrepared()) {
-			orders.poll().start();
+		if (!orders.isEmpty()) {
+			if (orders.peek().isEndPrepared()) {
+				ordersPrepared.add(orders.poll());
+			}
 		}
+	}
+
+	/**
+	 * Retorna la lista de ordenes que ya se han preparado , por mesero
+	 * 
+	 * @param idWaiter
+	 *            el id de del mesero
+	 * @return la lista de ordenes completas
+	 */
+	public List<Order> getOrdersPreared(int idWaiter) {
+		List<Order> orders = new ArrayList<>();
+		for (Order order : orders) {
+			if (order.getIdWaiter() == idWaiter && order.isEndPrepared()) {
+				orders.add(order);
+			}
+		}
+		return orders;
 	}
 
 	/**
@@ -60,6 +92,7 @@ public class Cocina {
 		chef.addTypePlate(TypePlate.POSTRE);
 
 		this.chefList.add(chef);
+		chef.start();
 
 		// Creación cosinero 2, puede prepara entradas y platos fuertes; puede preparar
 		// dos entradas al mismo tiempo
@@ -67,6 +100,8 @@ public class Cocina {
 		chef2.addTypePlate(TypePlate.ENTRADA);
 		chef2.addTypePlate(TypePlate.PLATO_FUERTE);
 		this.chefList.add(chef2);
+
+		chef2.start();
 	}
 
 	/**
@@ -78,6 +113,23 @@ public class Cocina {
 		this.orders.add(order);
 		for (Chef chef : chefList) {
 			if (!chef.isCompleteAllPlats()) {
+				startCook(chef);
+			}
+		}
+	}
+
+	/**
+	 * Agrega una todas las ordenes, a la cola de preparación
+	 * 
+	 * @param order
+	 */
+	public void addAllOrders(List<Order> orders) {
+		this.orders.addAll(orders);
+	}
+
+	public void serachChefFree() {
+		for (Chef chef : chefList) {
+			if (chef.isCompleteAllPlats()) {
 				startCook(chef);
 			}
 		}
@@ -98,6 +150,7 @@ public class Cocina {
 				// Evalua si el plato todavia no se ha cocinado
 				if (consumption.getConsumption().equals(StateConsumption.ORDER)
 						&& chefCanCookPlate(chef, consumption.getProduct().getTypePlate())) {
+					consumption.setAsigned();
 					consumptions.add(consumption);
 					// si no es la especialidad del chef solo retorna un producto si no se va por el
 					// else en las siguintes iteraciones
@@ -106,9 +159,11 @@ public class Cocina {
 					}
 				}
 			} else {
-				// si encuentra otra especialidad la agrega a la lista y termina, si no pues nno hace nada
+				// si encuentra otra especialidad la agrega a la lista y termina, si no pues nno
+				// hace nada
 				if (consumption.getConsumption().equals(StateConsumption.ORDER)
 						&& consumption.getProduct().getTypePlate().equals(chef.getSpecialty())) {
+					consumption.setAsigned();
 					consumptions.add(consumption);
 					return consumptions;
 				}
@@ -128,7 +183,7 @@ public class Cocina {
 
 	/**
 	 * Revisa la lista de los platos que esta preparando cada cosinero, para saber
-	 * cual plato ya esta listo
+	 * cual plato ya esta listo, si esta listo los quita de la lista de preparación
 	 * 
 	 * @param chef
 	 * @return
