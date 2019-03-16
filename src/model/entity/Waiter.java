@@ -46,7 +46,7 @@ public class Waiter extends Thread {
 	/**
 	 * suma de todas las calificaciones dadas
 	 */
-	private int calification;
+	private double calification;
 
 	/**
 	 * Numero de clientes atendidos
@@ -62,6 +62,8 @@ public class Waiter extends Thread {
 	private ManagerRestaurant managerRestaurant;
 	private Persistence persistence;
 
+	private boolean end;
+
 	// ------------------------------Constructor-------------------------
 	public Waiter(int id, List<RestaurantTable> tables, int maxNumerOrders, ManagerRestaurant managerRestaurant,
 			Persistence persistence) {
@@ -76,6 +78,7 @@ public class Waiter extends Thread {
 		this.managerRestaurant = managerRestaurant;
 		this.persistence = persistence;
 		this.stateWaiter = StateWaiter.SEARCH_TABLES;
+		this.end = false;
 	}
 
 	public Waiter(int id) {
@@ -88,12 +91,20 @@ public class Waiter extends Thread {
 
 	@Override
 	public void run() {
-		super.run();
-		while (true) {
+
+		while (!end) {
 			attendTables();
 			goToKitchen();
 			distributeOrders();
 		}
+	}
+
+	public void isWaiterEnd() {
+		for (RestaurantTable restaurantTable : tables) {
+			if(restaurantTable.getOrder()!=null)
+				return;
+		}
+		this.end=true;
 	}
 
 	/**
@@ -102,13 +113,12 @@ public class Waiter extends Thread {
 	 */
 	private void distributeOrders() {
 		try {
-			Thread.sleep(1000);// TODO Tiempo que tarda el mesero en ir de cocina a las mesas o lo contrario
+			Thread.sleep(100);// TODO Tiempo que tarda el mesero en ir de cocina a las mesas o lo contrario
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		if (ordersInKitchen != null) {
 			try {
-				System.out.println("Reviso ordenes listas");
 				for (Order order : ordersInKitchen) {
 					if (order.isAllOrderPrepated()) {
 						// Empizan a consumir los platos (el else)
@@ -130,9 +140,11 @@ public class Waiter extends Thread {
 		int numberOrders = 0;
 		this.stateWaiter = StateWaiter.SEARCH_TABLES;
 		while (this.stateWaiter.equals(StateWaiter.SEARCH_TABLES)) {
-			for (RestaurantTable restaurantTable : ManagerRestaurant.getManagerRestaurant().getDaoRestaurantTable().getRestaurantTablesList()) {
-				if (restaurantTable.isEmpty() && !stateWaiter.equals(StateWaiter.ATTEND_TABLE)
+			for (RestaurantTable restaurantTable : ManagerRestaurant.getManagerRestaurant().getDaoRestaurantTable()
+					.getRestaurantTablesList()) {
+				if (!restaurantTable.isEmpty() && !stateWaiter.equals(StateWaiter.ATTEND_TABLE)
 						&& restaurantTable.getOrder() == null) {
+					System.out.println("Atendiendo");
 					stateWaiter = StateWaiter.ATTEND_TABLE;
 					Order order = restaurantTable.startAtention(managerRestaurant, persistence, this);
 					if (orders == null) {
@@ -143,12 +155,8 @@ public class Waiter extends Thread {
 					}
 					this.orders.add(order);
 					restaurantTable.setOrder(order);
-					
-					
 					order.attendOrder(this);
-					System.out.println(order.getIdOrder());
-					
-					
+
 					while (stateWaiter.equals(StateWaiter.ATTEND_TABLE)) {
 					}
 
@@ -198,12 +206,27 @@ public class Waiter extends Thread {
 		this.tip += tip;
 	}
 
-	public void addCalification(int calification) {
+	public void addCalification(double calification) {
 		this.calification += calification;
 		this.numerClientAttend++;
+		System.out.println("--------------Calificacion mesero" + calculateAveragueQualification()
+				+ "-----------------------------------");
+
+	}
+
+	public double calculateAveragueQualification() {
+		return calification / numerClientAttend;
+	}
+
+	public boolean isEnd() {
+		return end;
 	}
 
 	// ---------------------------------Getters--------------------------
+	public String getNameWaiter(){
+		return "Mesero "+idWaiter;
+	}
+	
 	public int getIdWaiter() {
 		return idWaiter;
 	}
@@ -227,5 +250,14 @@ public class Waiter extends Thread {
 
 	public void setStateWaiter(StateWaiter stateWaiter) {
 		this.stateWaiter = stateWaiter;
+	}
+
+	/**
+	 * Indica que ya no hay mas clientes
+	 * 
+	 * @param t
+	 */
+	public void setEnd(boolean t) {
+		this.end = t;
 	}
 }

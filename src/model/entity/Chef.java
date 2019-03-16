@@ -75,20 +75,20 @@ public class Chef extends Thread {
 			for (Consumption consumption : orderToPrepared) {
 				if (consumption.getConsumption().equals(StateConsumption.ASIGNED)) {
 					consumption.setPreparing();
-					System.out.println("Chef "+id +" prepara " + consumption.getProduct().getName());
+					//System.out.println("Chef "+id +" prepara " + consumption.getProduct().getName());
 					maxTimeToPrepared = consumption.getTimeToPrepared() > maxTimeToPrepared
 							? consumption.getTimeToPrepared()
 							: maxTimeToPrepared;
 				consumption.setPrepared();
 				}
 			}
-			try {
+//			try {
 				// Espera el tiempo en preparar ese plato
 				//Thread.sleep(maxTimeToPrepared * GlobalConstant.SPEED_SYSTEM);
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+				//Thread.sleep(1);
+	//		} catch (InterruptedException e) {
+			//	e.printStackTrace();
+		//	}
 			// Marca todos los productos como preparados
 			//ManagerRestaurant.getManagerRestaurant().getCocina().startCook(this);
 		}

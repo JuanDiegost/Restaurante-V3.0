@@ -56,11 +56,16 @@ public class Cocina {
 	 * 
 	 */
 	private void isOrderComplete() {
-		if (!orders.isEmpty()) {
-			if (orders.peek().isEndPrepared()) {
-				ordersPrepared.add(orders.poll());
+		try {
+			if (!orders.isEmpty()) {
+				if (orders.peek().isEndPrepared()) {
+					ordersPrepared.add(orders.poll());
+				}
 			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+
 	}
 
 	/**
@@ -124,7 +129,12 @@ public class Cocina {
 	 * @param order
 	 */
 	public void addAllOrders(List<Order> orders) {
-		this.orders.addAll(orders);
+		try {
+			if (!orders.isEmpty())
+				this.orders.addAll(orders);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void serachChefFree() {

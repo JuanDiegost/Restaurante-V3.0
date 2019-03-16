@@ -47,9 +47,12 @@ public class Controller implements ActionListener{
 			//Seteamos los valores de dias, horas y comensales en la vista/
 			window.setValuesOfDaysHoursAndDiners(daysAndHours,diners);
 			//Creamos un hilo que actualice la vista a medida que se ejecute la logica/
-			SwingWorkerProductsTable sw = new SwingWorkerProductsTable(manager, diners, persistence, window);
-			//Ejecutamos el hilo/
-			manager.startAtention();
+			SwingWorkerProductsTable sw = new SwingWorkerProductsTable(manager, 10, persistence, window);
+			
+			
+			
+//			//Ejecutamos el hilo/
+//			manager.startAtention();
 			sw.execute();			
 			break;
 		}

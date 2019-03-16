@@ -1,11 +1,13 @@
 package model.entity;
+
 /**
  * Esta clase es la encargada de la estructura de un producto
- *@author Andres Torres y Lina Melo
+ * 
+ * @author Andres Torres y Lina Melo
  *
  */
 public class Product {
-	//-------------------------------Attributes---------------------------
+	// -------------------------------Attributes---------------------------
 	/**
 	 * Identificador del prodcuto
 	 */
@@ -26,82 +28,104 @@ public class Product {
 	 * Cantidad de veces calificado
 	 */
 	private int quantityQualifications;
-	
+
 	/**
 	 * Tiempo de preparacion tecnico
 	 */
 	private int preparationTime;
-	
+
 	/**
-	 * Timepo de comer el producto 
+	 * Timepo de comer el producto
 	 */
 	private int timeToEat;
-	
+
 	/**
 	 * Tipo de plato de este producto (plato fuerte, entrada, postre)
 	 */
 	private TypePlate typePlate;
-	
-	//------------------------------Constructor--------------------------
+
+	// ------------------------------Constructor--------------------------
 	/**
 	 * Constructor por defecto
-	 * @param id: Identificador 
-	 * @param name: Nombre
-	 * @param price: Precio
+	 * 
+	 * @param id:
+	 *            Identificador
+	 * @param name:
+	 *            Nombre
+	 * @param price:
+	 *            Precio
 	 */
-	public Product(int id, String name, int price,int preparationTime,int timeToEat,TypePlate typePlate) {
+	public Product(int id, String name, int price, int preparationTime, int timeToEat, TypePlate typePlate) {
 		this.idProduct = id;
 		this.name = name;
 		this.price = price;
-		this.preparationTime=preparationTime;
-		this.timeToEat=timeToEat;
-		this.typePlate=typePlate;
+		this.preparationTime = preparationTime;
+		this.timeToEat = timeToEat;
+		this.typePlate = typePlate;
 		this.quantityQualifications = 0;
 		this.totalQualification = 0;
 	}
-	//--------------------------------Methods----------------------------
+
+	// --------------------------------Methods----------------------------
 	/**
 	 * M�todo que acumula las calificaiones obtenidas
+	 * 
 	 * @param qualification
 	 */
 	public void addQualification(int qualification) {
-		/*Incrementamos en 1 la cantidad de veces que el producto es calificado*/
-		this.quantityQualifications++;
-		/*Agregamos la calificación al total*/
+		/* Agregamos la calificación al total */
+		addQuantity();
 		this.totalQualification += qualification;
 	}
+
 	/**
 	 * M�todo que obtiene la calificaci�n promedio del plato
+	 * 
 	 * @return Calificaci�n promedio
 	 */
-	public double calculateAveragueQualification() {
-		/*Dividimos la calificación total obtenida entre la cantidad de veces que fue pedido el producto*/
-		return totalQualification / quantityQualifications;
+	public float calculateAveragueQualification() {
+		/*
+		 * Dividimos la calificación total obtenida entre la cantidad de veces que fue
+		 * pedido el producto
+		 */		
+		return (totalQualification == 0) ? 0 : totalQualification / quantityQualifications;
 	}
-	//--------------------------------Getters----------------------------
+
+	public void addQuantity() {
+		this.quantityQualifications++;
+	}
+
+	// --------------------------------Getters----------------------------
 	public int getId() {
 		return idProduct;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public int getPrice() {
 		return price;
 	}
+
 	public int getTotalQualification() {
 		return totalQualification;
 	}
+
 	public int getQuantityQualifications() {
 		return quantityQualifications;
 	}
+
 	public int getPreparationTime() {
 		return preparationTime;
 	}
+
 	public int getTimeToEat() {
 		return timeToEat;
 	}
+
 	public TypePlate getTypePlate() {
 		return typePlate;
 	}
-	
+
 }

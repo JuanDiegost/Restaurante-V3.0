@@ -9,11 +9,11 @@ public class GlobalConstant {
 	/**
 	 * Ancho del panel de estadisticas
 	 */
-	public static final int WIDHT_PANEL_TABLE = 968;
+	public static final int WIDHT_PANEL_TABLE = 500;
 	/**
 	 * Alto del panel de estadisticas
 	 */
-	public static final int HEIGHT_PANEL_TABLE = 180;
+	public static final int HEIGHT_PANEL_TABLE = 600;
 	/**
 	 * Ancho del panel de inicio
 	 */

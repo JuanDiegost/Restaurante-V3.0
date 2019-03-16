@@ -104,6 +104,7 @@ public class Cashier extends Thread{
 		clientsCreditCard.add(client);
 		this.totalPaidCreditCard+=payment;
 		this.numberPaymentCreditCard++;
+		System.out.println("-------------------"+total()+"-----------------------------------");
 	}
 	
 	/**
@@ -115,6 +116,7 @@ public class Cashier extends Thread{
 		clientsCash.add(client);
 		this.totalPaidCash+=payment;
 		this.numberPaymentCash++;
+		//System.out.println("-------------------"+total()+"-----------------------------------");
 	}
 	
 	/**
@@ -139,6 +141,14 @@ public class Cashier extends Thread{
 	public void addPaymetSingle() {
 		System.out.println("Pago uno");
 		this.numberPaymentSingle++;
+	}
+	
+	/**
+	 * Ingresos en bruto del restaurant
+	 * @return 
+	 */
+	public double total() {
+		return this.totalPaidCash+this.totalPaidCreditCard;
 	}
 
 	//----------------Getters---------------------------------------------

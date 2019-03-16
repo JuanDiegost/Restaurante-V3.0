@@ -31,7 +31,7 @@ public class GlobalConstant {
 	/**
 	 * Numero maximo de netradas que se pueden ordenar
 	 */
-	public static final int MAX_NUM_ENTRACE=1;
+	public static final int MAX_NUM_ENTRACE=2;
 	
 	/**
 	 * Numero maximo de postres que se pueden ordenar

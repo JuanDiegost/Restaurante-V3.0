@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import model.entity.Product;
 /**
  * 
- * @author Andres Torres y Lina Melo
+ * @author Andres Torres, Lina Melo, Juan Diego Molina
  *
  */
 public class PanelTableProductStadistics extends JPanel{
@@ -29,7 +29,11 @@ public class PanelTableProductStadistics extends JPanel{
 	/**
 	 * Identificadores de columnas
 	 */
-	private static final String[] TITTLE_COLUMNS = {"Id","Nombre","Precio","N° Pedidos","Calific Total","Prom Calific", "Total ventas","Total Utilidades"};
+	private static final String[] TITTLE_COLUMNS = {
+			"Nombre",
+			"N° Pedidos",
+			"Prom Calific", 
+			"Total ventas"};
 	/**
      * Tabla historial de bacterias
      */
@@ -71,13 +75,13 @@ public class PanelTableProductStadistics extends JPanel{
         tableNumbers.setModel(model);
         tableNumbers.getTableHeader().setReorderingAllowed(false) ;
         tableNumbers.getColumnModel().getColumn(0).setPreferredWidth(30);
-        tableNumbers.getColumnModel().getColumn(1).setPreferredWidth(150);
-        tableNumbers.getColumnModel().getColumn(2).setPreferredWidth(50);
-        tableNumbers.getColumnModel().getColumn(3).setPreferredWidth(50);
-        tableNumbers.getColumnModel().getColumn(4).setPreferredWidth(80);
+        tableNumbers.getColumnModel().getColumn(1).setPreferredWidth(10);
+        tableNumbers.getColumnModel().getColumn(2).setPreferredWidth(10);
+        tableNumbers.getColumnModel().getColumn(3).setPreferredWidth(10);
+        /*tableNumbers.getColumnModel().getColumn(4).setPreferredWidth(80);
         tableNumbers.getColumnModel().getColumn(5).setPreferredWidth(80);
         tableNumbers.getColumnModel().getColumn(6).setPreferredWidth(100);
-        tableNumbers.getColumnModel().getColumn(7).setPreferredWidth(100);
+        tableNumbers.getColumnModel().getColumn(7).setPreferredWidth(100);*/
         tableNumbers.setRowHeight(30);
         tableNumbers.getTableHeader().setFont(new Font("Bookman Old Style", 1, 12));
         tableNumbers.getTableHeader().setBackground(new Color(251,255,168));
@@ -119,9 +123,11 @@ public class PanelTableProductStadistics extends JPanel{
     public void revalidateTableWithSpecificItems(ArrayList<Product> list) {
         model.getDataVector().removeAllElements();
         for (int i = 0; i < list.size(); i++) {
-            model.addRow(new Object[]{list.get(i).getId(),list.get(i).getName(),list.get(i).getPrice(),list.get(i).getQuantityQualifications(),
-            		list.get(i).getTotalQualification(),(float)list.get(i).getQuantityQualifications()/list.get(i).getTotalQualification(),
-            		list.get(i).getQuantityQualifications()*list.get(i).getPrice(),(list.get(i).getQuantityQualifications()*list.get(i).getPrice())*0.25});
+            model.addRow(new Object[]{
+            		list.get(i).getName(),
+            		list.get(i).getQuantityQualifications(),
+            		list.get(i).calculateAveragueQualification(),
+            		list.get(i).getQuantityQualifications()*list.get(i).getPrice()});
         }
         this.revalidate();
         this.repaint();

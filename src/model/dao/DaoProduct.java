@@ -49,15 +49,15 @@ public class DaoProduct {
 		this.productList.add(new Product(3, "Paella a la Valenciana", 20000, 600, 1200, TypePlate.PLATO_FUERTE));
 		this.productList.add(new Product(4, "Arroz con Pollo", 17000, 600, 1200, TypePlate.PLATO_FUERTE));
 		
-		this.producDessertList.add(new Product(1, "POSTRE", 18000, 600, 1200, TypePlate.PLATO_FUERTE));
-		this.producDessertList.add(new Product(2, "POSTRE", 12000, 600, 1200, TypePlate.PLATO_FUERTE));
-		this.producDessertList.add(new Product(3, "POSTRE", 20000, 600, 1200, TypePlate.PLATO_FUERTE));
-		this.producDessertList.add(new Product(4, "POSTRE", 17000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producDessertList.add(new Product(1, "POSTRE 1", 18000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producDessertList.add(new Product(2, "POSTRE 2", 12000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producDessertList.add(new Product(3, "POSTRE 3", 20000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producDessertList.add(new Product(4, "POSTRE 4", 17000, 600, 1200, TypePlate.PLATO_FUERTE));
 		
-		this.producEntraceList.add(new Product(1, "entrada", 18000, 600, 1200, TypePlate.PLATO_FUERTE));
-		this.producEntraceList.add(new Product(2, "entrada", 12000, 600, 1200, TypePlate.PLATO_FUERTE));
-		this.producEntraceList.add(new Product(3, "entrada", 20000, 600, 1200, TypePlate.PLATO_FUERTE));
-		this.producEntraceList.add(new Product(4, "entrada", 17000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producEntraceList.add(new Product(1, "entrada 1", 18000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producEntraceList.add(new Product(2, "entrada 2", 12000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producEntraceList.add(new Product(3, "entrada 3", 20000, 600, 1200, TypePlate.PLATO_FUERTE));
+		this.producEntraceList.add(new Product(4, "entrada 4", 17000, 600, 1200, TypePlate.PLATO_FUERTE));
 	}
 
 	/**
@@ -159,7 +159,8 @@ public class DaoProduct {
 	 * @return un producto tio plato fuerte
 	 */
 	public Product getRandomEntrece() {
-		return producEntraceList.get(Utils.generateRandom(0, producEntraceList.size() - 1));
+		Product product=producEntraceList.get(Utils.generateRandom(0, producEntraceList.size()));
+		return product;
 	}
 
 	/**
@@ -168,7 +169,8 @@ public class DaoProduct {
 	 * @return un producto tipo plato fuerte
 	 */
 	public  Product getRandomMain() {
-		return productList.get(Utils.generateRandom(0, productList.size() - 2));
+		Product product=productList.get(Utils.generateRandom(0, productList.size()));
+		return product;
 	}
 
 	/**
@@ -177,7 +179,8 @@ public class DaoProduct {
 	 * @return unproducto tipo postre
 	 */
 	public Product getRandomDessert() {
-		return producDessertList.get(Utils.generateRandom(0, producDessertList.size() - 2));
+		Product product=producDessertList.get(Utils.generateRandom(0, productList.size()));
+		return product;
 	}
 
 	// ---------------------------------Getters----------------------------

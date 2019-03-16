@@ -16,6 +16,7 @@ public class RestaurantTable extends Thread {
 	private int id;
 	private boolean empty;
 	private Order order;
+	public int quantityOfDiners;
 	/**
 	 * Tiempo que tarda el mesero en venir a tomar la orden.
 	 */
@@ -30,12 +31,12 @@ public class RestaurantTable extends Thread {
 	 */
 	public RestaurantTable(int id) {
 		this.id = id;
-		this.empty = false;
+		this.empty = true;
 		this.timeToAtention = 0;
 	}
 
 	public void fillTable() {
-		this.empty = true;
+		this.empty = false;
 		try {
 			this.start();
 		} catch (Exception e) {
@@ -54,7 +55,7 @@ public class RestaurantTable extends Thread {
 	 */
 	public Order startAtention(ManagerRestaurant managerRestaurant, Persistence persistence, Waiter waiter) {
 		// Calculamos la cantidad e comenzales por mesa de 1 a 4
-		int quantityOfDiners = Utils.generateRandom(1, 5);
+		int quantityOfDiners = Utils.generateRandom(1, 4);
 		double randomAttTime = Persistence.getINSTANCE().getAttentioTimeList()
 				.get(Utils.generateRandom(0, Persistence.getINSTANCE().getAttentioTimeList().size() - 1));
 		this.order = new Order(id, Persistence.getINSTANCE(), ManagerRestaurant.getManagerRestaurant().getDaoProduct(),
@@ -65,7 +66,7 @@ public class RestaurantTable extends Thread {
 
 	@Override
 	public void run() {
-		super.run();
+
 		if (order == null) {
 			try {
 				Thread.sleep(GlobalConstant.SPEED_SYSTEM);

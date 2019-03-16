@@ -1,5 +1,8 @@
 package model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.dao.Cocina;
 import model.dao.DaoOrder;
 import model.dao.DaoProduct;
@@ -39,6 +42,11 @@ public class ManagerRestaurant extends Thread {
 	private Cocina cocina;
 
 	/**
+	 * Lista de todos los consumos del restaurante
+	 */
+	private List<Consumption> listOrdersSell;
+
+	/**
 	 * Instancia de la caja.
 	 */
 	private Cashier cashier;
@@ -46,14 +54,15 @@ public class ManagerRestaurant extends Thread {
 	 * Instancia de la persistencia
 	 */
 	private Persistence persistence;
-	
+
 	private static ManagerRestaurant managerRestaurant;
-	
-	private ManagerRestaurant() {}
-	
+
+	private ManagerRestaurant() {
+	}
+
 	public static ManagerRestaurant getManagerRestaurant() {
-		if(managerRestaurant==null)
-			managerRestaurant=new ManagerRestaurant(Persistence.getINSTANCE());
+		if (managerRestaurant == null)
+			managerRestaurant = new ManagerRestaurant(Persistence.getINSTANCE());
 		return managerRestaurant;
 	}
 
@@ -66,6 +75,7 @@ public class ManagerRestaurant extends Thread {
 		this.daoRestaurantTable = new DaoRestauranTable();
 		this.cocina = new Cocina();
 		this.cashier = new Cashier(0);
+		this.listOrdersSell = new ArrayList<>();
 		// Inicia el hilo del cajero para que este este atendiendola fila de pago
 	}
 
@@ -128,28 +138,59 @@ public class ManagerRestaurant extends Thread {
 			daoRestaurantTable.addRestaurantTable(i);
 			waiter.addTable(daoRestaurantTable.getRestaurantTablesList().get(i));
 		}
-		daoWaiter.addWaiter(1, daoRestaurantTable.getRestaurantTablesList(), 3, this, persistence);
-		this.start();
+		
+		Waiter waiter2 = daoWaiter.getWaitersList().get(1);
+		for (int i = 10; i < 20; i++) {
+			daoRestaurantTable.addRestaurantTable(i);
+			waiter2.addTable(daoRestaurantTable.getRestaurantTablesList().get(i));
+		}
+		
+		//daoWaiter.addWaiter(1, daoRestaurantTable.getRestaurantTablesList(), 3, this, persistence);
 		waiter.start();
-
+		waiter2.start();
 	}
 
 	@Override
 	public void run() {
-		super.run();
-		for (int i = 0; i < 10; i++) {
-			try {
-				Thread.sleep(5000);
-				// Tiempo en tre la llegada de un nuevo cliente
-				RestaurantTable restaurantTable = daoRestaurantTable.getRestaurantTableEmpTy()
-						.get(Utils.generateRandom(0, daoRestaurantTable.getRestaurantTableEmpTy().size() - 1));
-				System.out.println("Nuevo cliente");
-				restaurantTable.fillTable();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		// System.out.println("---------------------------------------------------------------------------------------------------");
+		// System.out.println(persistence);
+		// Waiter waiter = daoWaiter.getWaitersList().get(0);
+		// for (int i = 0; i < 10; i++) {
+		// daoRestaurantTable.addRestaurantTable(i);
+		// waiter.addTable(daoRestaurantTable.getRestaurantTablesList().get(i));
+		// }
+		// daoWaiter.addWaiter(1, daoRestaurantTable.getRestaurantTablesList(), 3, this,
+		// persistence);
+		// waiter.start();
+		//
+		// for (int i = 0; i < 10; i++) {
+		try {
+			Thread.sleep(100);
+			// Tiempo en tre la llegada de un nuevo cliente
+			while (daoRestaurantTable.getRestaurantTableEmpTy().isEmpty()) {
+
 			}
+			RestaurantTable restaurantTable = daoRestaurantTable.getRestaurantTableEmpTy()
+					.get(Utils.generateRandom(0, daoRestaurantTable.getRestaurantTableEmpTy().size() - 1));
+
+			System.out.println("Nuevo cliente");
+			restaurantTable.fillTable();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		// }
+
+		// System.out.println("Termine");
+	}
+
+	/**
+	 * Agrega un nuevo consumo a la la lista de ventas
+	 * 
+	 * @param
+	 */
+	public void addConsuption(Consumption e) {
+		this.listOrdersSell.add(e);
 	}
 
 	// --------------------------------Getters----------------------------

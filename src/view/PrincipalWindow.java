@@ -19,9 +19,20 @@ public class PrincipalWindow extends JFrame{
 	private static final long serialVersionUID = -6553539283470740308L;
 	
 	/**
-	 * Panel de estadisticas
+	 * Panel de estadisticas face 1
 	 */
-	private PanelTableProductStadistics panelTable;
+	private PanelStage stage1;
+	
+	/**
+	 * Panel de estadisticas face 2
+	 */
+	private PanelStage stage2;
+	
+	/**
+	 * Panel de estadisticas face 3
+	 */
+	private PanelStage stage3;
+	
 	/**
 	 * Panel del mejor producto
 	 */
@@ -62,9 +73,17 @@ public class PrincipalWindow extends JFrame{
 	 * @param actionListener escucha de los botones
 	 */
 	private void loadPanels(ActionListener actionListener) {
-		this.panelTable = new PanelTableProductStadistics();
-		panelTable.setLocation(10, 94);
-		getContentPane().add(panelTable);
+		this.stage1 = new PanelStage();
+		stage1.setLocation(0, 94);
+		getContentPane().add(stage1);
+		
+		this.stage2 = new PanelStage();
+		stage2.setLocation(0, 94);
+		getContentPane().add(stage2);
+		
+		this.stage3 = new PanelStage();
+		stage3.setLocation(0, 94);
+		getContentPane().add(stage3);
 		
 		this.panelStart = new PanelStart(actionListener);
 		panelStart.setLocation(10, 10);
@@ -88,7 +107,8 @@ public class PrincipalWindow extends JFrame{
 		this.panelBestProduct.setTextFieldUtility(utility);
 	}
 	//--------------------------------Getters----------------------------
-	public PanelTableProductStadistics getPanelTable() {
-		return panelTable;
+	
+	public PanelStage getStage1() {
+		return stage1;
 	}
 }

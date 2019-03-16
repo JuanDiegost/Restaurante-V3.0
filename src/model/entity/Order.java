@@ -139,7 +139,7 @@ public class Order extends Thread {
 		try {
 			/* Espera del mesero en la mesa */
 			waiter.setStateWaiter(StateWaiter.ATTEND_TABLE);
-			Thread.sleep(i * GlobalConstant.SPEED_SYSTEM);
+			Thread.sleep(10);
 			waiter.setStateWaiter(StateWaiter.SEARCH_TABLES);
 		} catch (InterruptedException e) {
 			System.out.println("Error en la espera del mesero " + idWaiter + " en la mesa: " + idTable);
@@ -147,14 +147,14 @@ public class Order extends Thread {
 	}
 
 	public void attendOrder(Waiter waiter) {
-		System.out.println("Numero de comenzales " + quantityOfDiners);
+		this.waiter=waiter;
 		for (int i = 0; i < this.quantityOfDiners; i++) {
 			// Creo el numerode clientes indicado
 			// TODO aqui se deve madar un valor de la distribucion del tiempo de consumo al
 			// azar
 			double timeConsume = persistence.getConsumeTime()
 					.get(Utils.generateRandom(0, persistence.getConsumeTime().size() - 1));
-			clients.add(new Client((int) timeConsume, daoProduct));
+			clients.add(new Client((int) 10, daoProduct));
 
 		}
 		// Definimos un número entre 3-5 para la espera del mesero
@@ -163,7 +163,6 @@ public class Order extends Thread {
 		//this.idWaiter = Integer.parseInt(Thread.currentThread().getName().substring(14));
 		// Simulo el tiempo de pedido
 		waitOfWaiter(aux,waiter);
-		System.out.println("Termina de atender");
 		waiter.setStateWaiter(StateWaiter.SEARCH_TABLES);
 	}
 
@@ -173,29 +172,27 @@ public class Order extends Thread {
 	@Override
 	public void run() {
 		// Si no hay clientes en la mesa significa que no han ordenado
-		System.out.println("Empiezan los clientes");
 		if (clients.isEmpty()) {
 
 		} else {
 			// Simulo el tiempo que demora en traer la orden
-			System.out.println("Pedido empieza a comer"+getIdOrder());
 			eat();
 			for (Client client : clients) {
 				// calificación mesero
-				client.setCalificationWaiter(generateCalificationWaiter());
+				waiter.addCalification(generateCalificationWaiter());
 				// Calificación platos
 				client.calificatePlats();
 				client.endEat();
 			}
-			System.out.println("Calificar");
 
 			// Evalua si se le da una propina al mesero
-			if (Utils.generateRandom(0, 1) == 1) {
-				this.baksheesh = getTotalCost() * 0.1;
+			if (Utils.generateRandom(0, 2) == 1) {
+				waiter.addTip(getTotalCost() * 0.1);
 			}
 			this.modeOfPaymet = getModePaymentRandom();
 			pay();
 			restaurantTable.setOrder(null);
+			restaurantTable.setEmpty(true);
 			// Quita todos los clientes de la mesa
 
 		}
@@ -210,7 +207,7 @@ public class Order extends Thread {
 			maxTime = client.getTimeToConsume() > maxTime ? client.getTimeToConsume() : maxTime;
 		}
 		try {
-			Thread.sleep(maxTime * GlobalConstant.SPEED_SYSTEM);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -222,7 +219,6 @@ public class Order extends Thread {
 	 * Metodo que llama a la caja para realizar el pago
 	 */
 	private void pay() {
-		System.out.println("Cliente paga");
 		if (modeOfPaymet.equals(ModeOfPaymet.AMERICAN)) {
 			cashier.addPaymetAmerican();
 			paymentAllClientAmerican();
@@ -321,17 +317,17 @@ public class Order extends Thread {
 	 * 
 	 * @return
 	 */
-	private double generateCalificationWaiter() {
+	private int generateCalificationWaiter() {
 		if (atentionTime < GlobalConstant.TIME_CALIFICATION_LESS_40) {
-			return (Math.random() * 5) + 4;
+			return (int) (Math.random() * 6) ;
 		} else if (atentionTime < GlobalConstant.TIME_CALIFICATION_LESS_30) {
-			return (Math.random() * 4) + 3;
+			return (int) (Math.random() * 5) ;
 		} else if (atentionTime < GlobalConstant.TIME_CALIFICATION_LESS_20) {
-			return (Math.random() * 3) + 2;
+			return (int) (Math.random() * 4);
 		} else if (atentionTime < GlobalConstant.TIME_CALIFICATION_LESS_10) {
-			return (Math.random() * 2) + 1;
+			return (int) (Math.random() * 3);
 		}
-		return (Math.random() * 1) + 0;
+		return (int) (Math.random() * 2);
 	}
 
 	/**

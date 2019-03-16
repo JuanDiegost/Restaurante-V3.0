@@ -26,7 +26,7 @@ public class DaoRestauranTable {
 	public DaoRestauranTable() {
 		this.restaurantTablesList = new ArrayList<RestaurantTable>();
 		/*Carga la mesas por default*/
-		loadDefaultRestaurantTables();
+//		loadDefaultRestaurantTables();
 	}
 	//--------------------------------Methods----------------------------
 	/**
@@ -36,15 +36,7 @@ public class DaoRestauranTable {
 		/*Agrega una mesa a la lista */
 		this.restaurantTablesList.add(new RestaurantTable(id));
 	}
-	/**
-	 * Carga a memoria las mesas por defecto
-	 */
-	private void loadDefaultRestaurantTables() {
-		/*Carga las 5 mesas por default*/
-		for (int i = 1; i < GlobalConstant.NUMBER_RESTAURANT_TABLE; i++) {
-			this.addRestaurantTable(i);
-		}
-	}
+
 	
 	/**
 	 * M�todo que determino el id de la mesa dependiendo de un n�mero pseudoaleatorio
@@ -66,18 +58,34 @@ public class DaoRestauranTable {
 		}
 	}
 	
+	/**
+	 * Retorna la lista de mesas del restaurante vacias
+	 * @return
+	 */
 	public List<RestaurantTable> getRestaurantTableEmpTy(){
 		List<RestaurantTable> list=new ArrayList<>();
 		for (RestaurantTable restaurantTable :restaurantTablesList) {
-			if(restaurantTable.getOrder()==null)
+			if(restaurantTable.isEmpty())
 				list.add(restaurantTable);
 		}
 		return list;
 			
 	}
 	
+	/**
+	 * Retorna verdadero si el restaurante se encuentra vacio
+	 * @return
+	 */
+	public boolean isEmptyRestaurant() {
+		for (RestaurantTable restaurantTable : restaurantTablesList) {
+			if(!restaurantTable.isEmpty()) return false;
+		}
+		return true;
+	}
+	
 	//---------------------------------Getters---------------------------
 	public ArrayList<RestaurantTable> getRestaurantTablesList() {
 		return restaurantTablesList;
 	}
+
 }

@@ -45,7 +45,7 @@ public class Client extends Thread {
 		addEntrace();
 		addDesert();
 		addMainPlate();
-		printConsume();
+		//printConsume();
 	}
 	
 	private void printConsume() {
@@ -137,11 +137,11 @@ public class Client extends Thread {
 				}
 			}
 
-			Thread.sleep(timeToConsume * GlobalConstant.SPEED_SYSTEM);
+			Thread.sleep(timeToConsume);
 
 			for (Consumption consumption : consumptions) {
 				if (consumption.getConsumption().equals(StateConsumption.EATING)) {
-					System.out.println("Termina consumo");
+					//System.out.println("Termina consumo");
 					consumption.setEnd();
 				}
 			}
@@ -180,7 +180,9 @@ public class Client extends Thread {
 
 	public void calificatePlats() {
 		for (Consumption consumption : consumptions) {
-			consumption.setCalification(Math.random() * 5);
+			//consumption.setCalification(Math.random() * 5);
+			int cali=(int) (Math.random() * 6);
+			consumption.getProduct().addQualification(cali);
 		}
 	}
 }
