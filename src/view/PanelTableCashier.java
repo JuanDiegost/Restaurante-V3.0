@@ -40,8 +40,11 @@ public class PanelTableCashier extends Panel {
 	 */
 	private JScrollPane scrollTableNumbers;
 
+	private String title;
+	
 	// ------------------------------Constructor--------------------------
-	public PanelTableCashier() {
+	public PanelTableCashier(String title) {
+    	this.title=title;
 		this.setBounds(549, 38, GlobalConstant.WIDHT_PANEL_TABLE, GlobalConstant.HEIGHT_PANEL_TABLE);
 		this.setLayout(null);
 		loadTable();
@@ -57,7 +60,7 @@ public class PanelTableCashier extends Panel {
 		scrollTableNumbers.setBorder(new LineBorder(Color.ORANGE));
 		scrollTableNumbers.setSize(new Dimension(GlobalConstant.WIDHT_PANEL_TABLE, 150));
 		scrollTableNumbers.getViewport().setBackground(Color.WHITE);
-		scrollTableNumbers.setBorder(BorderFactory.createTitledBorder(null, "Tipos de pagos",
+		scrollTableNumbers.setBorder(BorderFactory.createTitledBorder(null, "Tipos de pagos de la "+title,
 				SwingConstants.CENTER, TitledBorder.TOP, new Font("Bookman Old Style", 0, 13)));
 		add(scrollTableNumbers);
 	}

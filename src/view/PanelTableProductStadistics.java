@@ -46,8 +46,11 @@ public class PanelTableProductStadistics extends JPanel{
      * Scrool de la tabla
      */
     private JScrollPane scrollTableNumbers;
+    private String title;
+    
     //------------------------------Constructor--------------------------
-    public PanelTableProductStadistics() {
+    public PanelTableProductStadistics(String title) {
+    	this.title=title;
     	this.setBounds(549, 38, GlobalConstant.WIDHT_PANEL_TABLE, GlobalConstant.HEIGHT_PANEL_TABLE);
     	this.setLayout(null);
 		loadTable();
@@ -62,7 +65,7 @@ public class PanelTableProductStadistics extends JPanel{
     	scrollTableNumbers.setBorder(new LineBorder(Color.ORANGE));
     	scrollTableNumbers.setSize(new Dimension( GlobalConstant.WIDHT_PANEL_TABLE, GlobalConstant.HEIGHT_PANEL_TABLE));
     	scrollTableNumbers.getViewport().setBackground(Color.WHITE);
-    	scrollTableNumbers.setBorder(BorderFactory.createTitledBorder(null, "Todas las estadisticas", SwingConstants.CENTER, TitledBorder.TOP, new Font("Bookman Old Style", 0, 13)));
+    	scrollTableNumbers.setBorder(BorderFactory.createTitledBorder(null, "Todas las estadisticas de la "+title, SwingConstants.CENTER, TitledBorder.TOP, new Font("Bookman Old Style", 0, 13)));
         add(scrollTableNumbers);
     }
     /**

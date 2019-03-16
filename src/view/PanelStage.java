@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Panel;
 
+
 public class PanelStage extends Panel {
 	// ------------------------------Attributes---------------------------
 	/**
@@ -21,6 +22,8 @@ public class PanelStage extends Panel {
 
 	private PanelTableCashier panelTableCashier;
 	
+	private String title;
+	
 	/**
 	 * Panel del mejor producto
 	 */
@@ -29,8 +32,10 @@ public class PanelStage extends Panel {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	public PanelStage() {
-		this.setBounds(20, 20, 1500, 700);
+	public PanelStage(String title) {
+		this.title=title;
+
+		this.setBounds(20, 20, 1200, 700);
     	this.setLayout(null);
 		loadPanels();
 	}
@@ -42,16 +47,16 @@ public class PanelStage extends Panel {
 	 *            escucha de los botones
 	 */
 	private void loadPanels() {
-		
-		this.panelTable = new PanelTableProductStadistics();
+
+		this.panelTable = new PanelTableProductStadistics(title);
 		panelTable.setLocation(0, 10);
 		add(panelTable);
 
-		this.panelTableWaiter = new PanelTableWaiterStadistics();
+		this.panelTableWaiter = new PanelTableWaiterStadistics(title);
 		panelTableWaiter.setLocation(600, 10);
 		add(panelTableWaiter);
 
-		this.panelTableCashier = new PanelTableCashier();
+		this.panelTableCashier = new PanelTableCashier(title);
 		panelTableCashier.setLocation(600, 210);
 		add(panelTableCashier);
 		

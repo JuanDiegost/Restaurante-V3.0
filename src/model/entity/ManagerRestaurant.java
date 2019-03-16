@@ -59,6 +59,10 @@ public class ManagerRestaurant extends Thread {
 
 	private ManagerRestaurant() {
 	}
+	
+	public void end() {
+		managerRestaurant=null;
+	}
 
 	public static ManagerRestaurant getManagerRestaurant() {
 		if (managerRestaurant == null)

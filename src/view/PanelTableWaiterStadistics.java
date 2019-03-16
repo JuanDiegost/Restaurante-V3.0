@@ -39,9 +39,12 @@ public class PanelTableWaiterStadistics extends Panel {
 	 * Scrool de la tabla
 	 */
 	private JScrollPane scrollTableNumbers;
+	
+	private String title;
 
 	// ------------------------------Constructor--------------------------
-	public PanelTableWaiterStadistics() {
+	public PanelTableWaiterStadistics(String title) {
+    	this.title=title;
 		this.setBounds(549, 38, GlobalConstant.WIDHT_PANEL_TABLE, 200);
 		this.setLayout(null);
 		loadTable();
@@ -57,7 +60,7 @@ public class PanelTableWaiterStadistics extends Panel {
 		scrollTableNumbers.setBorder(new LineBorder(Color.ORANGE));
 		scrollTableNumbers.setSize(new Dimension(GlobalConstant.WIDHT_PANEL_TABLE, GlobalConstant.HEIGHT_PANEL_TABLE));
 		scrollTableNumbers.getViewport().setBackground(Color.WHITE);
-		scrollTableNumbers.setBorder(BorderFactory.createTitledBorder(null, "Todas las estadisticas meseros",
+		scrollTableNumbers.setBorder(BorderFactory.createTitledBorder(null, "Todas las estadisticas meseros de la "+title,
 				SwingConstants.CENTER, TitledBorder.TOP, new Font("Bookman Old Style", 0, 13)));
 		add(scrollTableNumbers);
 	}

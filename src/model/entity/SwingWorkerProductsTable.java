@@ -36,6 +36,8 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 	 * Instancia de la vista
 	 */
 	private PrincipalWindow window;
+	
+	private view.PanelStage panelStage;
 
 	// ------------------------------Constructor--------------------------
 	/**
@@ -45,11 +47,12 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 	 *            Administrador del restaurante
 	 */
 	public SwingWorkerProductsTable(ManagerRestaurant manager, int diners, Persistence persistence,
-			PrincipalWindow window) {
+			PrincipalWindow window,view.PanelStage stage) {
 		this.manager = manager;
 		this.diners = diners;
 		this.persistence = persistence;
 		this.window = window;
+		this.panelStage=stage;
 	}
 
 	// --------------------------------Methods----------------------------
@@ -66,12 +69,8 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 		int attendedDiners = 0;
 		manager.startAtention();
 		while (attendedDiners < 100) {
-			//
-			// //manager.getDaoOrder().addOrder(table.getIdRestauratTable(),persistence,
-			// manager.getDaoProduct(),aux,persistence.getAttentioTimeList().get(aux),manager.getCashier(),manager.getDaoWaiter().getWaitersList().get(0));
 			attendedDiners += 1;
 			// /*Lanzamos el hilo al ejecutor para que se ponga en la cola de ejecución*/
-			// manager.setQuantity(quantityOfDiners);
 			executor.execute(manager);
 		}
 
@@ -97,12 +96,15 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 		list.addAll(ManagerRestaurant.getManagerRestaurant().getDaoProduct().getProducDessertList());
 		list.addAll(ManagerRestaurant.getManagerRestaurant().getDaoProduct().getProducEntraceList());
 
-		window.getStage1().getPanelTable().revalidateTableWithSpecificItems(list);
-		window.getStage1().getPanelTableWaiter().revalidateTableWithSpecificItems(ManagerRestaurant.getManagerRestaurant().getDaoWaiter().getWaitersList());
-		Cashier cashier=ManagerRestaurant.getManagerRestaurant().getCashier();
-		
-		int[] l= {cashier.getNumberPaymentCash(),cashier.getNumberPaymentCreditCard(),cashier.getNumberPaymentDivided(),cashier.getNumberPaymentAmerican(),cashier.getNumberPaymentSingle()};
-		window.getStage1().getPanelTableCashier().revalidateTableWithSpecificItems(l);
+		panelStage.getPanelTable().revalidateTableWithSpecificItems(list);
+		panelStage.getPanelTableWaiter().revalidateTableWithSpecificItems(
+				ManagerRestaurant.getManagerRestaurant().getDaoWaiter().getWaitersList());
+		Cashier cashier = ManagerRestaurant.getManagerRestaurant().getCashier();
+
+		int[] l = { cashier.getNumberPaymentCash(), cashier.getNumberPaymentCreditCard(),
+				cashier.getNumberPaymentDivided(), cashier.getNumberPaymentAmerican(),
+				cashier.getNumberPaymentSingle() };
+		panelStage.getPanelTableCashier().revalidateTableWithSpecificItems(l);
 		/* Buscamos el producto con mayores utilidades */
 		// Product productAux =
 		// manager.getDaoProduct().searchProductWithBestUtilities(chunks.get(0));

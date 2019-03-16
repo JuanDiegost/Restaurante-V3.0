@@ -1,9 +1,12 @@
 package view;
 
 import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 /**
@@ -73,18 +76,26 @@ public class PrincipalWindow extends JFrame{
 	 * @param actionListener escucha de los botones
 	 */
 	private void loadPanels(ActionListener actionListener) {
-		this.stage1 = new PanelStage();
-		stage1.setLocation(0, 94);
-		getContentPane().add(stage1);
+		ScrollPane pane=new ScrollPane();
+		pane.setBounds(90, 90, 1200, 500);
 		
-		this.stage2 = new PanelStage();
-		stage2.setLocation(0, 94);
-		getContentPane().add(stage2);
+		JPanel jPanel=new JPanel(new GridLayout(1, 3));
+		pane.add(jPanel);
 		
-		this.stage3 = new PanelStage();
-		stage3.setLocation(0, 94);
-		getContentPane().add(stage3);
+		this.stage1 = new PanelStage("Ventana 1");
+		stage1.setLocation(0, 800);
+		jPanel.add(stage1);
 		
+		this.stage2 = new PanelStage("Ventana 2");
+		//stage2.setLocation(800, 800);
+		jPanel.add(stage2);
+		
+		this.stage3 = new PanelStage("Ventana 3");
+		//stage3.setLocation(1600, 800);
+		jPanel.add(stage3);
+		
+		getContentPane().add(pane);
+
 		this.panelStart = new PanelStart(actionListener);
 		panelStart.setLocation(10, 10);
 		getContentPane().add(panelStart);
@@ -110,5 +121,13 @@ public class PrincipalWindow extends JFrame{
 	
 	public PanelStage getStage1() {
 		return stage1;
+	}
+	
+	public PanelStage getStage2() {
+		return stage2;
+	}
+	
+	public PanelStage getStage3() {
+		return stage3;
 	}
 }
