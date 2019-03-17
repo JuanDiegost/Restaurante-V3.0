@@ -36,8 +36,9 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 	 * Instancia de la vista
 	 */
 	private PrincipalWindow window;
-	
+
 	private view.PanelStage panelStage;
+
 
 	// ------------------------------Constructor--------------------------
 	/**
@@ -47,12 +48,12 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 	 *            Administrador del restaurante
 	 */
 	public SwingWorkerProductsTable(ManagerRestaurant manager, int diners, Persistence persistence,
-			PrincipalWindow window,view.PanelStage stage) {
+			PrincipalWindow window, view.PanelStage stage) {
 		this.manager = manager;
 		this.diners = diners;
 		this.persistence = persistence;
 		this.window = window;
-		this.panelStage=stage;
+		this.panelStage = stage;
 	}
 
 	// --------------------------------Methods----------------------------
@@ -68,7 +69,7 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 		int aux = 0;
 		int attendedDiners = 0;
 		manager.startAtention();
-		while (attendedDiners < 100) {
+		while (attendedDiners < 5) {
 			attendedDiners += 1;
 			// /*Lanzamos el hilo al ejecutor para que se ponga en la cola de ejecución*/
 			executor.execute(manager);
@@ -81,8 +82,10 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 			publish(manager.getDaoProduct().getProductList()); /* Supone que lo manda a vista */
 
 		}
-		while (!manager.getDaoWaiter().getWaitersList().get(0).isEnd()) {
+		while (!manager.getDaoWaiter().getWaitersList().get(0).isEnd()
+				&& !manager.getDaoWaiter().getWaitersList().get(1).isEnd()) {
 			manager.getDaoWaiter().getWaitersList().get(0).isWaiterEnd();
+			manager.getDaoWaiter().getWaitersList().get(1).isWaiterEnd();
 			publish(manager.getDaoProduct().getProductList()); /* Supone que lo manda a vista */
 		}
 		return null;
@@ -119,7 +122,16 @@ public class SwingWorkerProductsTable extends SwingWorker<Void, ArrayList<Produc
 		for (Product product : manager.getDaoProduct().getProductList()) {
 			System.out.println(product.getName() + " : " + product.getTotalQualification());
 		}
+		System.out.println("Termine ya del todo");
+		for (Waiter waiter : ManagerRestaurant.getManagerRestaurant().getDaoWaiter().getWaitersList()) {
+			waiter.setEnd(true);
+		}
+		
 		// window.getPanelTable().revalidateTableWithSpecificItems(manager.getDaoProduct().getProductList());
 
+	}
+
+	public void setManager(ManagerRestaurant manager) {
+		this.manager = manager;
 	}
 }

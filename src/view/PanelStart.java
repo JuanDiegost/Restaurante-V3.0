@@ -37,7 +37,7 @@ public class PanelStart extends JPanel {
 		this.setBounds(10,10, GlobalConstant.WIDHT_PANEL_START, GlobalConstant.HEIGHT_PANEL_START);
 		this.setLayout(null);
 		
-		JButton btnSimular = new JButton("<html><center>Empezar<br>simulación</center></html>\n");
+		JButton btnSimular = new JButton("<html><center>Empezar<br>simulación 1</center></html>\n");
 		btnSimular.setForeground(Color.BLACK);
 		btnSimular.setFont(new Font("Bookman Old Style", Font.BOLD, 14));
 		btnSimular.setBackground(new Color(240,240,240));
@@ -48,9 +48,33 @@ public class PanelStart extends JPanel {
 		btnSimular.setActionCommand("GO_TO_SIMULATE");
 		this.add(btnSimular);
 		
+		
+		
+		JButton btnSimular2 = new JButton("<html><center>Empezar<br>simulación  2</center></html>\n");
+		btnSimular2.setForeground(Color.BLACK);
+		btnSimular2.setFont(new Font("Bookman Old Style", Font.BOLD, 14));
+		btnSimular2.setBackground(new Color(240,240,240));
+		btnSimular2.setBounds(120, 8, 100, 60);
+		btnSimular2.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GREEN, 1),
+				BorderFactory.createEtchedBorder(EtchedBorder.RAISED)));
+		btnSimular2.addActionListener(listener);
+		btnSimular2.setActionCommand("GO_TO_SIMULATE2");
+		this.add(btnSimular2);
+		
+		JButton btnSimular3 = new JButton("<html><center>Empezar<br>simulación 3</center></html>\n");
+		btnSimular3.setForeground(Color.BLACK);
+		btnSimular3.setFont(new Font("Bookman Old Style", Font.BOLD, 14));
+		btnSimular3.setBackground(new Color(240,240,240));
+		btnSimular3.setBounds(220, 8, 100, 60);
+		btnSimular3.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GREEN, 1),
+				BorderFactory.createEtchedBorder(EtchedBorder.RAISED)));
+		btnSimular3.addActionListener(listener);
+		btnSimular3.setActionCommand("GO_TO_SIMULATE3");
+		this.add(btnSimular3);
+		
 		JLabel label_1 = new JLabel("");
 		label_1.setIcon(new ImageIcon("./res/img/arrow_opt.jpg"));
-		label_1.setBounds(120, 5, 90, 66);
+		label_1.setBounds(320, 5, 90, 66);
 		this.add(label_1);
 		
 		JLabel lblDaysToSimulate = new JLabel("Días a simular");
@@ -59,7 +83,7 @@ public class PanelStart extends JPanel {
 		this.add(lblDaysToSimulate);
 		
 		textFieldDayToSimulate = new JTextField();
-		textFieldDayToSimulate.setBounds(293, 50, 51, 19);
+		textFieldDayToSimulate.setBounds(493, 50, 51, 19);
 		textFieldDayToSimulate.setEditable(false);
 		textFieldDayToSimulate.setHorizontalAlignment(SwingConstants.CENTER);
 		this.add(textFieldDayToSimulate);
@@ -67,11 +91,11 @@ public class PanelStart extends JPanel {
 		
 		JLabel lblDiners = new JLabel("Comensales");
 		lblDiners.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblDiners.setBounds(360, 10, 65, 13);
+		lblDiners.setBounds(460, 10, 65, 13);
 		this.add(lblDiners);
 		
 		textFieldDiners = new JTextField();
-		textFieldDiners.setBounds(435, 7, 51, 19);
+		textFieldDiners.setBounds(535, 7, 51, 19);
 		textFieldDiners.setEditable(false);
 		textFieldDiners.setHorizontalAlignment(SwingConstants.CENTER);
 		this.add(textFieldDiners);
@@ -79,11 +103,11 @@ public class PanelStart extends JPanel {
 		
 		JLabel lblHoursToSimulate = new JLabel("Horas a simular");
 		lblHoursToSimulate.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblHoursToSimulate.setBounds(207, 10, 95, 20);
+		lblHoursToSimulate.setBounds(407, 10, 95, 20);
 		this.add(lblHoursToSimulate);
 		
 		textFieldHoursToSimulate = new JTextField();
-		textFieldHoursToSimulate.setBounds(293, 7, 51, 19);
+		textFieldHoursToSimulate.setBounds(493, 7, 51, 19);
 		textFieldHoursToSimulate.setEditable(false);
 		textFieldHoursToSimulate.setHorizontalAlignment(SwingConstants.CENTER);
 		this.add(textFieldHoursToSimulate);

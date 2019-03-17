@@ -191,8 +191,9 @@ public class Order extends Thread {
 			}
 			this.modeOfPaymet = getModePaymentRandom();
 			pay();
-			restaurantTable.setOrder(null);
 			restaurantTable.setEmpty(true);
+			restaurantTable.setOrder(null);
+
 			// Quita todos los clientes de la mesa
 
 		}
